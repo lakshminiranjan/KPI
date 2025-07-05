@@ -24,8 +24,7 @@
             color: red; 
             font-size: 12px; 
             margin-left: 10px; 
-            display: none;
-            visibility: hidden;
+            
             font-weight: bold;
         }
         .error-span.show {
