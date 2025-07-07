@@ -32,42 +32,6 @@ Partial Public Class _Default
     Protected WithEvents lblFormTitle As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''txtKPIID control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtKPIID As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''lblKPIError control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblKPIError As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''txtOrder control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtOrder As Global.System.Web.UI.WebControls.TextBox
-
-    '''<summary>
-    '''lblOrderError control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblOrderError As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
     '''txtMetric control.
     '''</summary>
     '''<remarks>
@@ -95,6 +59,24 @@ Partial Public Class _Default
     Protected WithEvents lblDuplicateMetricKPIError As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''txtKPIID control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtKPIID As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''lblKPIError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblKPIError As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''txtShortDesc control.
     '''</summary>
     '''<remarks>
@@ -102,6 +84,24 @@ Partial Public Class _Default
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtShortDesc As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''txtOrder control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtOrder As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''lblOrderError control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblOrderError As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''txtImpact control.

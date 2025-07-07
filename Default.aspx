@@ -306,11 +306,11 @@
         <h3><asp:Label ID="lblFormTitle" runat="server" Text="Add KPI" /></h3>
 
         <table>
-            <tr><td>KPI ID:</td><td><asp:TextBox ID="txtKPIID" runat="server" /><asp:Label ID="lblKPIError" runat="server" CssClass="error-span" Text="KPI ID already exists" ForeColor="Red" Visible="false" /></td></tr>
-            <tr><td>Order:</td><td><asp:TextBox ID="txtOrder" runat="server" /><asp:Label ID="lblOrderError" runat="server"   Text="Please add numbers between 1–999" ForeColor="Red" Style="color: red;font-size: 12px; margin-top:5px;display:block;"  /></td></tr>
             <tr><td>Metric:</td><td><asp:TextBox ID="txtMetric" runat="server" /></td></tr>
             <tr><td>Name:</td><td><asp:TextBox ID="txtKPIName" runat="server" /><asp:Label ID="lblDuplicateMetricKPIError" runat="server"   ForeColor="Red" Style="color: red;font-size: 12px; margin-top:5px;display:block;"  /></td></tr>
+            <tr><td>KPI ID:</td><td><asp:TextBox ID="txtKPIID" runat="server" /><asp:Label ID="lblKPIError" runat="server" CssClass="error-span" Text="KPI ID already exists" ForeColor="Red" Visible="false" /></td></tr>
             <tr><td>Short Desc:</td><td><asp:TextBox ID="txtShortDesc" runat="server" TextMode="MultiLine" Rows="3" /></td></tr>
+            <tr><td>Order:</td><td><asp:TextBox ID="txtOrder" runat="server" /><asp:Label ID="lblOrderError" runat="server"   Text="Please add numbers between 1–999" ForeColor="Red" Style="color: red;font-size: 12px; margin-top:5px;display:block;"  /></td></tr>
             <tr><td>Impact:</td><td><asp:TextBox ID="txtImpact" runat="server" TextMode="MultiLine" Rows="3" /></td></tr>
             <tr><td>Numerator:</td><td><asp:TextBox ID="txtNumerator" runat="server" TextMode="MultiLine" Rows="3" /></td></tr>
             <tr><td>Denominator:</td><td><asp:TextBox ID="txtDenom" runat="server" TextMode="MultiLine" Rows="3" /></td></tr>
@@ -394,10 +394,10 @@
                     <asp:Button ID="btnEdit" runat="server" Text="Edit" CommandName="EditKPI" CommandArgument='<%# Container.DataItemIndex %>' CssClass="btn-edit" />
                 </ItemTemplate>
             </asp:TemplateField>
-            <asp:BoundField DataField="KPI ID" HeaderText="KPI ID" />
             <asp:BoundField DataField="KPI or Standalone Metric" HeaderText="Metric" />
-            <asp:BoundField DataField="KPI Name" HeaderText="Name" />
-            <asp:BoundField DataField="KPI Short Description" HeaderText="Short Desc" />
+            <asp:BoundField DataField="KPI Name" HeaderText="KPI Name" />
+            <asp:BoundField DataField="KPI ID" HeaderText="KPI ID" />
+            <asp:BoundField DataField="KPI Short Description" HeaderText="Short Description" />
             <asp:BoundField DataField="KPI Impact" HeaderText="Impact" />
             <asp:BoundField DataField="Numerator Description" HeaderText="Numerator" />
             <asp:BoundField DataField="Denominator Description" HeaderText="Denominator" />

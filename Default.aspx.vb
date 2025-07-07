@@ -210,7 +210,7 @@ Partial Public Class _Default
 
     Private Sub LoadEditData(rowIndex As Integer)
         Dim row As GridViewRow = GridView1.Rows(rowIndex)
-        Dim kpiId As String = row.Cells(1).Text.Trim()
+        Dim kpiId As String = row.Cells(3).Text.Trim()
 
         hfIsEdit.Value = "true"
         hfKPIID.Value = kpiId
@@ -259,9 +259,9 @@ Partial Public Class _Default
         hfIsEdit.Value = "false"
         hfKPIID.Value = ""
         lblFormTitle.Text = "Add KPI"
-        txtKPIID.Text = ""
         txtMetric.Text = ""
         txtKPIName.Text = ""
+        txtKPIID.Text = ""
         txtShortDesc.Text = ""
         txtImpact.Text = ""
         txtNumerator.Text = ""

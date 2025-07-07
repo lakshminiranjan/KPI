@@ -55,42 +55,6 @@ Auto-generated field.
 To modify move field declaration from designer file to code-behind file.
 </remarks>
 </member>
-<member name="F:KPILibrary._Default._txtKPIID">
-<summary>
-txtKPIID control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
-<member name="F:KPILibrary._Default._lblKPIError">
-<summary>
-lblKPIError control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
-<member name="F:KPILibrary._Default._txtOrder">
-<summary>
-txtOrder control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
-<member name="F:KPILibrary._Default._lblOrderError">
-<summary>
-lblOrderError control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
 <member name="F:KPILibrary._Default._txtMetric">
 <summary>
 txtMetric control.
@@ -118,9 +82,45 @@ Auto-generated field.
 To modify move field declaration from designer file to code-behind file.
 </remarks>
 </member>
+<member name="F:KPILibrary._Default._txtKPIID">
+<summary>
+txtKPIID control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary._Default._lblKPIError">
+<summary>
+lblKPIError control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
 <member name="F:KPILibrary._Default._txtShortDesc">
 <summary>
 txtShortDesc control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary._Default._txtOrder">
+<summary>
+txtOrder control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary._Default._lblOrderError">
+<summary>
+lblOrderError control.
 </summary>
 <remarks>
 Auto-generated field.
