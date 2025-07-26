@@ -377,7 +377,10 @@
         InsertCommandType="StoredProcedure"
         UpdateCommand="dbo.UpdateKPIByID"
         UpdateCommandType="StoredProcedure">
-        <SelectParameters> <asp:ControlParameter Name="Status" ControlID="ddlFilter" PropertyName="SelectedValue" Type="String" /> </SelectParameters>
+        <SelectParameters>
+         <asp:Parameter Name="Status" Type="String" DefaultValue="Y" />
+        </SelectParameters>
+
         <InsertParameters>
             <asp:Parameter Name="KPI_ID" />
             <asp:Parameter Name="KPI_or_Standalone_Metric" />
@@ -425,14 +428,14 @@
 
     <div class="grid-container">
 
-    <asp:Panel runat="server" ID="pnlFilter" style="margin-bottom:10px;">
-    <strong>Filter KPI:</strong>
-    <asp:DropDownList ID="ddlFilter" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged">
-    
-    <asp:ListItem Text="Active" Value="Y" />
-    <asp:ListItem Text="Inactive" Value="N" />
-    </asp:DropDownList>
-    </asp:Panel>
+    <div style="margin-bottom:18px;">
+    <span style="font-weight:bold;">Show:</span>
+    <label class="toggle-switch" style="vertical-align:middle;margin:0 10px;">
+        <asp:CheckBox ID="chkShowActive" runat="server" AutoPostBack="true" OnCheckedChanged="chkShowActive_CheckedChanged" />
+        <span class="slider"></span>
+    </label>
+    <span id="toggleLabel" runat="server" style="font-weight:bold;">Active</span>
+</div>
 
     <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" DataSourceID="SqlDataSource1" CssClass="grid-style" OnRowCommand="GridView1_RowCommand">
     <Columns>

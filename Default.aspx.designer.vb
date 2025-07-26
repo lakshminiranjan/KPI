@@ -266,22 +266,22 @@ Partial Public Class _Default
     Protected WithEvents SqlDataSource1 As Global.System.Web.UI.WebControls.SqlDataSource
 
     '''<summary>
-    '''pnlFilter control.
+    '''chkShowActive control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents pnlFilter As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents chkShowActive As Global.System.Web.UI.WebControls.CheckBox
 
     '''<summary>
-    '''ddlFilter control.
+    '''toggleLabel control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents ddlFilter As Global.System.Web.UI.WebControls.DropDownList
+    Protected WithEvents toggleLabel As Global.System.Web.UI.HtmlControls.HtmlGenericControl
 
     '''<summary>
     '''GridView1 control.

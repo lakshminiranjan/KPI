@@ -289,18 +289,18 @@ Auto-generated field.
 To modify move field declaration from designer file to code-behind file.
 </remarks>
 </member>
-<member name="F:KPILibrary._Default._pnlFilter">
+<member name="F:KPILibrary._Default._chkShowActive">
 <summary>
-pnlFilter control.
+chkShowActive control.
 </summary>
 <remarks>
 Auto-generated field.
 To modify move field declaration from designer file to code-behind file.
 </remarks>
 </member>
-<member name="F:KPILibrary._Default._ddlFilter">
+<member name="F:KPILibrary._Default._toggleLabel">
 <summary>
-ddlFilter control.
+toggleLabel control.
 </summary>
 <remarks>
 Auto-generated field.

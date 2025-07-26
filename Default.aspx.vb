@@ -20,14 +20,21 @@ Partial Public Class _Default
         If Not IsPostBack Then
             ' *** CHANGE HERE ***
             ' Set default filter to "Active" (Y) instead of "All" (Nothing/"")
-            ddlFilter.SelectedValue = "Y" ' Select "Active" in the dropdown
-            SqlDataSource1.SelectParameters("Status").DefaultValue = "Y" ' Filter data to Active only
+            chkShowActive.Checked = True
+            SqlDataSource1.SelectParameters("Status").DefaultValue = "Y"
+            toggleLabel.InnerText = "Active"
             GridView1.DataBind()
         End If
     End Sub
 
-    Protected Sub ddlFilter_SelectedIndexChanged(sender As Object, e As EventArgs)
-        SqlDataSource1.SelectParameters("Status").DefaultValue = ddlFilter.SelectedValue
+    Protected Sub chkShowActive_CheckedChanged(sender As Object, e As EventArgs)
+        If chkShowActive.Checked Then
+            SqlDataSource1.SelectParameters("Status").DefaultValue = "Y"
+            toggleLabel.InnerText = "Active"
+        Else
+            SqlDataSource1.SelectParameters("Status").DefaultValue = "N"
+            toggleLabel.InnerText = "Inactive"
+        End If
         GridView1.DataBind()
     End Sub
 
