@@ -266,6 +266,24 @@ Partial Public Class _Default
     Protected WithEvents SqlDataSource1 As Global.System.Web.UI.WebControls.SqlDataSource
 
     '''<summary>
+    '''pnlFilter control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlFilter As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''ddlFilter control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlFilter As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
     '''GridView1 control.
     '''</summary>
     '''<remarks>

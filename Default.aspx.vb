@@ -1,7 +1,4 @@
-﻿
-
-
-Imports System.Configuration
+﻿Imports System.Configuration
 Imports System.Data.SqlClient
 Imports System.Security.Permissions
 Imports System.Text.RegularExpressions
@@ -20,10 +17,18 @@ Partial Public Class _Default
                 Return
             End If
         End If
-
         If Not IsPostBack Then
+            ' *** CHANGE HERE ***
+            ' Set default filter to "Active" (Y) instead of "All" (Nothing/"")
+            ddlFilter.SelectedValue = "Y" ' Select "Active" in the dropdown
+            SqlDataSource1.SelectParameters("Status").DefaultValue = "Y" ' Filter data to Active only
             GridView1.DataBind()
         End If
+    End Sub
+
+    Protected Sub ddlFilter_SelectedIndexChanged(sender As Object, e As EventArgs)
+        SqlDataSource1.SelectParameters("Status").DefaultValue = ddlFilter.SelectedValue
+        GridView1.DataBind()
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs) Handles btnSubmit.Click
@@ -96,7 +101,7 @@ Partial Public Class _Default
                     If count > 0 Then
                         lblKPIError.Visible = True
                         lblKPIError.Text = "KPI ID already exists"
-                        ScriptManager.RegisterStartupScript(Me, Me.GetType(), "ShowKPIError_" & Guid.NewGuid().ToString(), 
+                        ScriptManager.RegisterStartupScript(Me, Me.GetType(), "ShowKPIError_" & Guid.NewGuid().ToString(),
                             "showKPIError('KPI ID already exists');", True)
                         System.Diagnostics.Debug.WriteLine("KPI ID validation failed: " & kpiID)
                         valid = False
@@ -185,13 +190,13 @@ Partial Public Class _Default
             GridView1.DataBind()
 
             ' Hide modal and show success message
-            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "HideModal_" & Guid.NewGuid().ToString(), 
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "HideModal_" & Guid.NewGuid().ToString(),
                 "hidePopup(); alert('KPI saved successfully!');", True)
 
         Catch ex As Exception
             ' Handle any database errors
             System.Diagnostics.Debug.WriteLine("Error saving KPI: " & ex.Message & " StackTrace: " & ex.StackTrace)
-            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "ShowModalError_" & Guid.NewGuid().ToString(), 
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "ShowModalError_" & Guid.NewGuid().ToString(),
                 "showPopup(); alert('Error saving KPI: " & ex.Message.Replace("'", "\'") & "');", True)
         End Try
     End Sub
@@ -321,6 +326,9 @@ Partial Public Class _Default
             Return False ' Allow server-side validation to handle
         End Try
     End Function
+
+
+
 
     Protected Sub btnLogout_Click(sender As Object, e As EventArgs)
         Session.Clear()
