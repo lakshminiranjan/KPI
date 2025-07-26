@@ -234,7 +234,10 @@ Partial Public Class _Default
     End Function
 
     Protected Sub GridView1_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If e.CommandName = "CustomSort" Then
+        If e.CommandName = "EditKPI" Then
+            Dim index As Integer = Convert.ToInt32(e.CommandArgument)
+            LoadEditData(index)
+        ElseIf e.CommandName = "CustomSort" Then
             Dim args = e.CommandArgument.ToString().Split("|"c)
             If args.Length = 2 Then
                 SortColumn = args(0)
@@ -247,9 +250,10 @@ Partial Public Class _Default
     End Sub
 
 
+
     Private Sub LoadEditData(rowIndex As Integer)
-        Dim row As GridViewRow = GridView1.Rows(rowIndex)
-        Dim kpiId As String = row.Cells(3).Text.Trim()
+        Dim kpiId As String = GridView1.DataKeys(rowIndex).Value.ToString()
+
 
         hfIsEdit.Value = "true"
         hfKPIID.Value = kpiId

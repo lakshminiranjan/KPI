@@ -445,7 +445,7 @@
 </div>
 
     <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" DataSourceID="SqlDataSource1" CssClass="grid-style" OnRowCommand="GridView1_RowCommand"
-    OnRowCreated="GridView1_RowCreated">
+    OnRowCreated="GridView1_RowCreated" DataKeyNames="KPI ID">
     <Columns>
 
         <asp:TemplateField>
@@ -453,8 +453,11 @@
                 <asp:Button ID="btnAddKPI" runat="server" Text="+ Add KPI" CssClass="btn-add" OnClick="btnAddKPI_Click" />
             </HeaderTemplate>
             <ItemTemplate>
-                <asp:Button ID="btnEdit" runat="server" Text="Edit" CommandName="EditKPI" CommandArgument='<%# Container.DataItemIndex %>' CssClass="btn-edit" />
-            </ItemTemplate>
+    <asp:Button ID="btnEdit" runat="server" Text="Edit"
+        CommandName="EditKPI"
+        CommandArgument='<%# Container.DataItemIndex %>'
+        CssClass="btn-edit" />
+  </ItemTemplate>
         </asp:TemplateField>
     <asp:TemplateField HeaderText="Metric" SortExpression="KPI or Standalone Metric">
         <HeaderTemplate>
