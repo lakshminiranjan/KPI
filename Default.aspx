@@ -4,11 +4,6 @@
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        .sortable-header .sort-arrows { opacity: 0; transition: opacity 0.2s; display:inline-block; }
-        .sortable-header:hover .sort-arrows { opacity: 1; }
-        .arrow-icon { background: none; border: none; font-size: 14px; margin-left: 3px; cursor: pointer; color: #2196F3; padding:0 2px; }
-        .sort-indicator { font-weight:bold; color:darkorange; margin-left:3px; }
-
         .modal {
             display: none;
             position: fixed;
@@ -383,9 +378,7 @@
         UpdateCommand="dbo.UpdateKPIByID"
         UpdateCommandType="StoredProcedure">
         <SelectParameters>
-        <asp:Parameter Name="Status" Type="String" DefaultValue="Y" />
-        <asp:Parameter Name="SortColumn" Type="String" DefaultValue="KPI or Standalone Metric" />
-        <asp:Parameter Name="SortDirection" Type="String" DefaultValue="ASC" />
+         <asp:Parameter Name="Status" Type="String" DefaultValue="Y" />
         </SelectParameters>
 
         <InsertParameters>
@@ -436,18 +429,17 @@
     <div class="grid-container">
 
     <div style="margin-bottom:18px;">
-    <span id="toggleLabel" runat="server" style="font-weight:bold;">Active</span>
+    <span style="font-weight:bold;">Show:</span>
     <label class="toggle-switch" style="vertical-align:middle;margin:0 10px;">
         <asp:CheckBox ID="chkShowActive" runat="server" AutoPostBack="true" OnCheckedChanged="chkShowActive_CheckedChanged" />
         <span class="slider"></span>
     </label>
-    
+    <span id="toggleLabel" runat="server" style="font-weight:bold;">Active</span>
 </div>
 
-    <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" DataSourceID="SqlDataSource1" CssClass="grid-style" OnRowCommand="GridView1_RowCommand"
-    OnRowCreated="GridView1_RowCreated">
+    <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" DataSourceID="SqlDataSource1" CssClass="grid-style" OnRowCommand="GridView1_RowCommand">
     <Columns>
-
+        
         <asp:TemplateField>
             <HeaderTemplate>
                 <asp:Button ID="btnAddKPI" runat="server" Text="+ Add KPI" CssClass="btn-add" OnClick="btnAddKPI_Click" />
@@ -456,298 +448,97 @@
                 <asp:Button ID="btnEdit" runat="server" Text="Edit" CommandName="EditKPI" CommandArgument='<%# Container.DataItemIndex %>' CssClass="btn-edit" />
             </ItemTemplate>
         </asp:TemplateField>
-    <asp:TemplateField HeaderText="Metric" SortExpression="KPI or Standalone Metric">
-        <HeaderTemplate>
-            <div class="sortable-header">
-                Metric
-                <span class="sort-arrows">
-                    <asp:LinkButton ID="btnSortUpMetric" runat="server" CommandName="CustomSort"
-                        CommandArgument="KPI or Standalone Metric|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
-                    <asp:LinkButton ID="btnSortDownMetric" runat="server" CommandName="CustomSort"
-                        CommandArgument="KPI or Standalone Metric|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
-                </span>
-                <asp:Label ID="lblCurrentSortMetric" runat="server" CssClass="sort-indicator"></asp:Label>
-            </div>
-        </HeaderTemplate>
-        <ItemTemplate><%# Eval("KPI or Standalone Metric") %></ItemTemplate>
-    </asp:TemplateField>
 
-    <asp:TemplateField HeaderText="KPI Name" SortExpression="KPI Name">
-        <HeaderTemplate>
-            <div class="sortable-header">
-                KPI Name
-                <span class="sort-arrows">
-                    <asp:LinkButton ID="btnSortUpKPIName" runat="server" CommandName="CustomSort"
-                        CommandArgument="KPI Name|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
-                    <asp:LinkButton ID="btnSortDownKPIName" runat="server" CommandName="CustomSort"
-                        CommandArgument="KPI Name|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
-                </span>
-                <asp:Label ID="lblCurrentSortKPIName" runat="server" CssClass="sort-indicator"></asp:Label>
-            </div>
-        </HeaderTemplate>
-        <ItemTemplate><%# Eval("KPI Name") %></ItemTemplate>
-    </asp:TemplateField>
+        
+        <asp:BoundField DataField="KPI or Standalone Metric" HeaderText="Metric" ItemStyle-Width="150px" />
 
-    <asp:TemplateField HeaderText="KPI ID" SortExpression="KPI ID">
-        <HeaderTemplate>
-            <div class="sortable-header">
-                KPI ID
-                <span class="sort-arrows">
-                    <asp:LinkButton ID="btnSortUpKPIID" runat="server" CommandName="CustomSort"
-                        CommandArgument="KPI ID|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
-                    <asp:LinkButton ID="btnSortDownKPIID" runat="server" CommandName="CustomSort"
-                        CommandArgument="KPI ID|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
-                </span>
-                <asp:Label ID="lblCurrentSortKPIID" runat="server" CssClass="sort-indicator"></asp:Label>
-            </div>
-        </HeaderTemplate>
-        <ItemTemplate><%# Eval("KPI ID") %></ItemTemplate>
-    </asp:TemplateField>
+        
+        <asp:BoundField DataField="KPI Name" HeaderText="KPI Name" ItemStyle-Width="150px" />
 
-    <asp:TemplateField HeaderText="Short Description" SortExpression="KPI Short Description">
-        <HeaderTemplate>
-            <div class="sortable-header">
-                Short Description
-                <span class="sort-arrows">
-                    <asp:LinkButton ID="btnSortUpShortDesc" runat="server" CommandName="CustomSort"
-                        CommandArgument="KPI Short Description|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
-                    <asp:LinkButton ID="btnSortDownShortDesc" runat="server" CommandName="CustomSort"
-                        CommandArgument="KPI Short Description|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
-                </span>
-                <asp:Label ID="lblCurrentSortShortDesc" runat="server" CssClass="sort-indicator"></asp:Label>
-            </div>
-        </HeaderTemplate>
-        <ItemTemplate><%# Eval("KPI Short Description") %></ItemTemplate>
-    </asp:TemplateField>
+        
+        <asp:BoundField DataField="KPI ID" HeaderText="KPI ID" ItemStyle-Width="100px" />
 
-    <asp:TemplateField HeaderText="Impact" SortExpression="KPI Impact">
-        <HeaderTemplate>
-            <div class="sortable-header">
-                Impact
-                <span class="sort-arrows">
-                    <asp:LinkButton ID="btnSortUpImpact" runat="server" CommandName="CustomSort"
-                        CommandArgument="KPI Impact|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
-                    <asp:LinkButton ID="btnSortDownImpact" runat="server" CommandName="CustomSort"
-                        CommandArgument="KPI Impact|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
-                </span>
-                <asp:Label ID="lblCurrentSortImpact" runat="server" CssClass="sort-indicator"></asp:Label>
-            </div>
-        </HeaderTemplate>
-        <ItemTemplate><%# Eval("KPI Impact") %></ItemTemplate>
-    </asp:TemplateField>
+        
+        <asp:BoundField DataField="KPI Short Description" HeaderText="Short Description" ItemStyle-Width="200px" />
 
-    <asp:TemplateField HeaderText="Numerator" SortExpression="Numerator Description">
-        <HeaderTemplate>
-            <div class="sortable-header">
-                Numerator
-                <span class="sort-arrows">
-                    <asp:LinkButton ID="btnSortUpNum" runat="server" CommandName="CustomSort"
-                        CommandArgument="Numerator Description|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
-                    <asp:LinkButton ID="btnSortDownNum" runat="server" CommandName="CustomSort"
-                        CommandArgument="Numerator Description|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
-                </span>
-                <asp:Label ID="lblCurrentSortNum" runat="server" CssClass="sort-indicator"></asp:Label>
-            </div>
-        </HeaderTemplate>
-        <ItemTemplate><%# Eval("Numerator Description") %></ItemTemplate>
-    </asp:TemplateField>
-    <asp:TemplateField HeaderText="Denominator" SortExpression="Denominator Description">
-        <HeaderTemplate>
-            <div class="sortable-header">
-                Denominator
-                <span class="sort-arrows">
-                    <asp:LinkButton ID="btnSortUpDen" runat="server" CommandName="CustomSort"
-                        CommandArgument="Denominator Description|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
-                    <asp:LinkButton ID="btnSortDownDen" runat="server" CommandName="CustomSort"
-                        CommandArgument="Denominator Description|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
-                </span>
-                <asp:Label ID="lblCurrentSortDen" runat="server" CssClass="sort-indicator"></asp:Label>
-            </div>
-        </HeaderTemplate>
-        <ItemTemplate><%# Eval("Denominator Description") %></ItemTemplate>
-    </asp:TemplateField>
-    <asp:TemplateField HeaderText="Unit" SortExpression="Unit">
-        <HeaderTemplate>
-            <div class="sortable-header">
-                Unit
-                <span class="sort-arrows">
-                    <asp:LinkButton ID="btnSortUpUnit" runat="server" CommandName="CustomSort"
-                        CommandArgument="Unit|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
-                    <asp:LinkButton ID="btnSortDownUnit" runat="server" CommandName="CustomSort"
-                        CommandArgument="Unit|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
-                </span>
-                <asp:Label ID="lblCurrentSortUnit" runat="server" CssClass="sort-indicator"></asp:Label>
-            </div>
-        </HeaderTemplate>
-        <ItemTemplate><%# Eval("Unit") %></ItemTemplate>
-    </asp:TemplateField>
-    <asp:TemplateField HeaderText="Datasource" SortExpression="Datasource">
-        <HeaderTemplate>
-            <div class="sortable-header">
-                Datasource
-                <span class="sort-arrows">
-                    <asp:LinkButton ID="btnSortUpDS" runat="server" CommandName="CustomSort"
-                        CommandArgument="Datasource|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
-                    <asp:LinkButton ID="btnSortDownDS" runat="server" CommandName="CustomSort"
-                        CommandArgument="Datasource|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
-                </span>
-                <asp:Label ID="lblCurrentSortDS" runat="server" CssClass="sort-indicator"></asp:Label>
-            </div>
-        </HeaderTemplate>
-        <ItemTemplate><%# Eval("Datasource") %></ItemTemplate>
-    </asp:TemplateField>
-    <asp:TemplateField HeaderText="Order" SortExpression="OrderWithinSecton">
-        <HeaderTemplate>
-            <div class="sortable-header">
-                Order
-                <span class="sort-arrows">
-                    <asp:LinkButton ID="btnSortUpOrder" runat="server" CommandName="CustomSort"
-                        CommandArgument="OrderWithinSecton|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
-                    <asp:LinkButton ID="btnSortDownOrder" runat="server" CommandName="CustomSort"
-                        CommandArgument="OrderWithinSecton|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
-                </span>
-                <asp:Label ID="lblCurrentSortOrder" runat="server" CssClass="sort-indicator"></asp:Label>
-            </div>
-        </HeaderTemplate>
-        <ItemTemplate><%# Eval("OrderWithinSecton") %></ItemTemplate>
-    </asp:TemplateField>
-    <asp:TemplateField HeaderText="Active" SortExpression="Active">
-        <HeaderTemplate>
-            <div class="sortable-header">
-                Active
-                <span class="sort-arrows">
-                    <asp:LinkButton ID="btnSortUpActive" runat="server" CommandName="CustomSort"
-                        CommandArgument="Active|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
-                    <asp:LinkButton ID="btnSortDownActive" runat="server" CommandName="CustomSort"
-                        CommandArgument="Active|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
-                </span>
-                <asp:Label ID="lblCurrentSortActive" runat="server" CssClass="sort-indicator"></asp:Label>
-            </div>
-        </HeaderTemplate>
-        <ItemTemplate><%# If(Eval("Active").ToString() = "Y", "YES", "NO") %></ItemTemplate>
-    </asp:TemplateField>
-    <asp:TemplateField HeaderText="FLAG DIVISINAL" SortExpression="FLAG_DIVISINAL">
-        <HeaderTemplate>
-            <div class="sortable-header">
-                FLAG DIVISINAL
-                <span class="sort-arrows">
-                    <asp:LinkButton ID="btnSortUpDiv" runat="server" CommandName="CustomSort"
-                        CommandArgument="FLAG_DIVISINAL|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
-                    <asp:LinkButton ID="btnSortDownDiv" runat="server" CommandName="CustomSort"
-                        CommandArgument="FLAG_DIVISINAL|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
-                </span>
-                <asp:Label ID="lblCurrentSortDiv" runat="server" CssClass="sort-indicator"></asp:Label>
-            </div>
-        </HeaderTemplate>
-        <ItemTemplate><%# If(Eval("FLAG_DIVISINAL").ToString() = "Y", "YES", "NO") %></ItemTemplate>
-    </asp:TemplateField>
-    <asp:TemplateField HeaderText="FLAG VENDOR" SortExpression="FLAG_VENDOR">
-        <HeaderTemplate>
-            <div class="sortable-header">
-                FLAG VENDOR
-                <span class="sort-arrows">
-                    <asp:LinkButton ID="btnSortUpVendor" runat="server" CommandName="CustomSort"
-                        CommandArgument="FLAG_VENDOR|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
-                    <asp:LinkButton ID="btnSortDownVendor" runat="server" CommandName="CustomSort"
-                        CommandArgument="FLAG_VENDOR|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
-                </span>
-                <asp:Label ID="lblCurrentSortVendor" runat="server" CssClass="sort-indicator"></asp:Label>
-            </div>
-        </HeaderTemplate>
-        <ItemTemplate><%# If(Eval("FLAG_VENDOR").ToString() = "Y", "YES", "NO") %></ItemTemplate>
-    </asp:TemplateField>
-    <asp:TemplateField HeaderText="FLAG ENGAGEMENTID" SortExpression="FLAG_ENGAGEMENTID">
-        <HeaderTemplate>
-            <div class="sortable-header">
-                FLAG ENGAGEMENTID
-                <span class="sort-arrows">
-                    <asp:LinkButton ID="btnSortUpEng" runat="server" CommandName="CustomSort"
-                        CommandArgument="FLAG_ENGAGEMENTID|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
-                    <asp:LinkButton ID="btnSortDownEng" runat="server" CommandName="CustomSort"
-                        CommandArgument="FLAG_ENGAGEMENTID|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
-                </span>
-                <asp:Label ID="lblCurrentSortEng" runat="server" CssClass="sort-indicator"></asp:Label>
-            </div>
-        </HeaderTemplate>
-        <ItemTemplate><%# If(Eval("FLAG_ENGAGEMENTID").ToString() = "Y", "YES", "NO") %></ItemTemplate>
-    </asp:TemplateField>
-    <asp:TemplateField HeaderText="FLAG CONTRACTID" SortExpression="FLAG_CONTRACTID">
-        <HeaderTemplate>
-            <div class="sortable-header">
-                FLAG CONTRACTID
-                <span class="sort-arrows">
-                    <asp:LinkButton ID="btnSortUpContract" runat="server" CommandName="CustomSort"
-                        CommandArgument="FLAG_CONTRACTID|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
-                    <asp:LinkButton ID="btnSortDownContract" runat="server" CommandName="CustomSort"
-                        CommandArgument="FLAG_CONTRACTID|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
-                </span>
-                <asp:Label ID="lblCurrentSortContract" runat="server" CssClass="sort-indicator"></asp:Label>
-            </div>
-        </HeaderTemplate>
-        <ItemTemplate><%# If(Eval("FLAG_CONTRACTID").ToString() = "Y", "YES", "NO") %></ItemTemplate>
-    </asp:TemplateField>
-    <asp:TemplateField HeaderText="FLAG COSTCENTRE" SortExpression="FLAG_COSTCENTRE">
-        <HeaderTemplate>
-            <div class="sortable-header">
-                FLAG COSTCENTRE
-                <span class="sort-arrows">
-                    <asp:LinkButton ID="btnSortUpCC" runat="server" CommandName="CustomSort"
-                        CommandArgument="FLAG_COSTCENTRE|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
-                    <asp:LinkButton ID="btnSortDownCC" runat="server" CommandName="CustomSort"
-                        CommandArgument="FLAG_COSTCENTRE|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
-                </span>
-                <asp:Label ID="lblCurrentSortCC" runat="server" CssClass="sort-indicator"></asp:Label>
-            </div>
-        </HeaderTemplate>
-        <ItemTemplate><%# If(Eval("FLAG_COSTCENTRE").ToString() = "Y", "YES", "NO") %></ItemTemplate>
-    </asp:TemplateField>
-    <asp:TemplateField HeaderText="FLAG DEUBALvl4" SortExpression="FLAG_DEUBALvl4">
-        <HeaderTemplate>
-            <div class="sortable-header">
-                FLAG DEUBALvl4
-                <span class="sort-arrows">
-                    <asp:LinkButton ID="btnSortUpLvl4" runat="server" CommandName="CustomSort"
-                        CommandArgument="FLAG_DEUBALvl4|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
-                    <asp:LinkButton ID="btnSortDownLvl4" runat="server" CommandName="CustomSort"
-                        CommandArgument="FLAG_DEUBALvl4|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
-                </span>
-                <asp:Label ID="lblCurrentSortLvl4" runat="server" CssClass="sort-indicator"></asp:Label>
-            </div>
-        </HeaderTemplate>
-        <ItemTemplate><%# If(Eval("FLAG_DEUBALvl4").ToString() = "Y", "YES", "NO") %></ItemTemplate>
-    </asp:TemplateField>
-    <asp:TemplateField HeaderText="FLAG HRID" SortExpression="FLAG_HRID">
-        <HeaderTemplate>
-            <div class="sortable-header">
-                FLAG HRID
-                <span class="sort-arrows">
-                    <asp:LinkButton ID="btnSortUpHRID" runat="server" CommandName="CustomSort"
-                        CommandArgument="FLAG_HRID|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
-                    <asp:LinkButton ID="btnSortDownHRID" runat="server" CommandName="CustomSort"
-                        CommandArgument="FLAG_HRID|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
-                </span>
-                <asp:Label ID="lblCurrentSortHRID" runat="server" CssClass="sort-indicator"></asp:Label>
-            </div>
-        </HeaderTemplate>
-        <ItemTemplate><%# If(Eval("FLAG_HRID").ToString() = "Y", "YES", "NO") %></ItemTemplate>
-    </asp:TemplateField>
-    <asp:TemplateField HeaderText="FLAG REQUESTID" SortExpression="FLAG_REQUESTID">
-        <HeaderTemplate>
-            <div class="sortable-header">
-                FLAG REQUESTID
-                <span class="sort-arrows">
-                    <asp:LinkButton ID="btnSortUpReq" runat="server" CommandName="CustomSort"
-                        CommandArgument="FLAG_REQUESTID|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
-                    <asp:LinkButton ID="btnSortDownReq" runat="server" CommandName="CustomSort"
-                        CommandArgument="FLAG_REQUESTID|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
-                </span>
-                <asp:Label ID="lblCurrentSortReq" runat="server" CssClass="sort-indicator"></asp:Label>
-            </div>
-        </HeaderTemplate>
-        <ItemTemplate><%# If(Eval("FLAG_REQUESTID").ToString() = "Y", "YES", "NO") %></ItemTemplate>
-    </asp:TemplateField>
-</Columns>
+        
+        <asp:BoundField DataField="KPI Impact" HeaderText="Impact" ItemStyle-Width="150px" />
 
+        
+        <asp:BoundField DataField="Numerator Description" HeaderText="Numerator" ItemStyle-Width="150px" />
+
+        
+        <asp:BoundField DataField="Denominator Description" HeaderText="Denominator" ItemStyle-Width="150px" />
+
+        
+        <asp:BoundField DataField="Unit" HeaderText="Unit" ItemStyle-Width="50px" />
+
+        
+        <asp:BoundField DataField="Datasource" HeaderText="Datasource" ItemStyle-Width="150px" />
+
+        
+        <asp:BoundField DataField="OrderWithinSecton" HeaderText="Order" ItemStyle-Width="50px" />
+
+        
+        <asp:TemplateField HeaderText="Active">
+            <ItemTemplate>
+                <%# If(Eval("Active").ToString() = "Y", "YES", "NO") %>
+            </ItemTemplate>
+            <ItemStyle Width="75px" />
+        </asp:TemplateField>
+
+        
+        <asp:TemplateField HeaderText="FLAG DIVISINAL">
+            <ItemTemplate>
+                <%# If(Eval("FLAG_DIVISINAL").ToString() = "Y", "YES", "NO") %>
+            </ItemTemplate>
+            <ItemStyle Width="100px" />
+        </asp:TemplateField>
+
+        
+        <asp:TemplateField HeaderText="FLAG VENDOR">
+            <ItemTemplate>
+                <%# If(Eval("FLAG_VENDOR").ToString() = "Y", "YES", "NO") %>
+            </ItemTemplate>
+            <ItemStyle Width="100px" />
+        </asp:TemplateField>
+        <asp:TemplateField HeaderText="FLAG ENGAGEMENTID">
+            <ItemTemplate>
+                <%# If(Eval("FLAG_ENGAGEMENTID").ToString() = "Y", "YES", "NO") %>
+            </ItemTemplate>
+            <ItemStyle Width="100px" />
+        </asp:TemplateField>
+        <asp:TemplateField HeaderText="FLAG CONTRACTID">
+            <ItemTemplate>
+                <%# If(Eval("FLAG_CONTRACTID").ToString() = "Y", "YES", "NO") %>
+            </ItemTemplate>
+            <ItemStyle Width="100px" />
+        </asp:TemplateField>
+        <asp:TemplateField HeaderText="FLAG COSTCENTRE">
+            <ItemTemplate>
+                <%# If(Eval("FLAG_COSTCENTRE").ToString() = "Y", "YES", "NO") %>
+            </ItemTemplate>
+            <ItemStyle Width="100px" />
+        </asp:TemplateField>
+        <asp:TemplateField HeaderText="FLAG DEUBALvl4">
+            <ItemTemplate>
+                <%# If(Eval("FLAG_DEUBALvl4").ToString() = "Y", "YES", "NO") %>
+            </ItemTemplate>
+            <ItemStyle Width="100px" />
+        </asp:TemplateField>
+        <asp:TemplateField HeaderText="FLAG HRID">
+            <ItemTemplate>
+                <%# If(Eval("FLAG_HRID").ToString() = "Y", "YES", "NO") %>
+            </ItemTemplate>
+            <ItemStyle Width="100px" />
+        </asp:TemplateField>
+        <asp:TemplateField HeaderText="FLAG REQUESTID">
+            <ItemTemplate>
+                <%# If(Eval("FLAG_REQUESTID").ToString() = "Y", "YES", "NO") %>
+            </ItemTemplate>
+            <ItemStyle Width="100px" />
+        </asp:TemplateField>
+    </Columns>
 </asp:GridView>
         </div>
 </asp:Content>
