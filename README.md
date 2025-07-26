@@ -8,6 +8,7 @@ GO
 
 ALTER PROCEDURE [dbo].[GetAllKPITable]
 @Status CHAR(1) = NULL -- Y = Active, N = Inactive, NULL = All
+
 AS
 BEGIN
 SET NOCOUNT ON;
