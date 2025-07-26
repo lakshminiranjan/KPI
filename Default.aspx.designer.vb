@@ -266,15 +266,6 @@ Partial Public Class _Default
     Protected WithEvents SqlDataSource1 As Global.System.Web.UI.WebControls.SqlDataSource
 
     '''<summary>
-    '''chkShowActive control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents chkShowActive As Global.System.Web.UI.WebControls.CheckBox
-
-    '''<summary>
     '''toggleLabel control.
     '''</summary>
     '''<remarks>
@@ -282,6 +273,15 @@ Partial Public Class _Default
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents toggleLabel As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''chkShowActive control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkShowActive As Global.System.Web.UI.WebControls.CheckBox
 
     '''<summary>
     '''GridView1 control.
