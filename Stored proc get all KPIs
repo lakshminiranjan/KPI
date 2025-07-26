@@ -7,34 +7,32 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 ALTER PROCEDURE [dbo].[GetAllKPITable]
-@Status CHAR(1) = NULL -- Y = Active, N = Inactive, NULL = All
+    @Status CHAR(1) = NULL,
+    @SortColumn NVARCHAR(50) = NULL,
+    @SortDirection NVARCHAR(4) = NULL
 AS
 BEGIN
-SET NOCOUNT ON;
+    SET NOCOUNT ON;
+    IF @SortColumn IS NULL OR LTRIM(RTRIM(@SortColumn)) = ''
+        SET @SortColumn = '[KPI or Standalone Metric]';
+    IF @SortDirection IS NULL OR UPPER(LTRIM(RTRIM(@SortDirection))) NOT IN ('ASC','DESC')
+        SET @SortDirection = 'ASC';
+
+    DECLARE @sql NVARCHAR(MAX);
+
+    SET @sql = N'
+    SELECT
+        [KPI ID], [KPI or Standalone Metric], [KPI Name], [KPI Short Description], [KPI Impact], [Numerator Description],
+        [Denominator Description], [Unit], [Datasource], [OrderWithinSecton], [Active], [FLAG_DIVISINAL], [FLAG_VENDOR],
+        [FLAG_ENGAGEMENTID], [FLAG_CONTRACTID], [FLAG_COSTCENTRE], [FLAG_DEUBALvl4], [FLAG_HRID], [FLAG_REQUESTID]
+    FROM dbo.KPITable
+    WHERE (@Status IS NULL OR Active = @Status)
+    ORDER BY ' + QUOTENAME(@SortColumn) + ' ' + @SortDirection +
+        CASE WHEN @SortColumn <> 'OrderWithinSecton' THEN ', [OrderWithinSecton] ASC' ELSE '' END;
+
+    EXEC sp_executesql @sql, N'@Status CHAR(1), @SortColumn NVARCHAR(50), @SortDirection NVARCHAR(4)', @Status=@Status, @SortColumn=@SortColumn, @SortDirection=@SortDirection;
+END
 
 
-SELECT 
-    [KPI ID],
-    [KPI or Standalone Metric],
-    [KPI Name],
-    [KPI Short Description],
-    [KPI Impact],
-    [Numerator Description],
-    [Denominator Description],
-    [Unit],
-    [Datasource],
-    [OrderWithinSecton],
-    [Active],
-    [FLAG_DIVISINAL],
-    [FLAG_VENDOR],
-    [FLAG_ENGAGEMENTID],
-    [FLAG_CONTRACTID],
-    [FLAG_COSTCENTRE],
-    [FLAG_DEUBALvl4],
-    [FLAG_HRID],
-    [FLAG_REQUESTID]
-FROM dbo.KPITable
-WHERE @Status IS NULL OR Active = @Status
-END;
 
 GO
