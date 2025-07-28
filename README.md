@@ -72,40 +72,87 @@ Citations:
 [2] Kpi-Library.aspx.vb https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/d3ee7600-36e4-4070-844a-376c0d7ca2ed/Kpi-Library.aspx.vb
 
 
-Deployment Attachments
-(Below are placeholders for your deployment .txt/code files. Replace each section with your actual code before final packaging/distribution.)
+In this leva space for files give like this is table TXT file, these are stored proc TXT files for each stored proc these are UI files aspx, vb, designer code
 
-Table Change TXT File
-KPITable_Alter.txt
+Certainly! Here is your documentation template **including placeholders/spaces for files** organized as TXT attachments for deployment, as you requested.
 
-sql
+# KPI Management v2.0 – Enhancement Documentation
+
+## 1. **Additional Data Columns**
+**“Constraints”** and **“Subject Matter Expert Email”** added to KPI records.
+
+- **Table Changes**
+  - New columns in `KPITable`: `Constraints`, `Subject_Matter_Expert_Email`.
+- **Stored Procedures**
+  - Updated: `InsertKPI`, `UpdateKPIByID`, `GetAllKPITable` (add/select/update new columns).
+- **UI (ASPX/VB Code)**
+  - New input fields in the Add/Edit KPI modal for Constraints and SME Email.
+  - New columns added to the GridView for display.
+  - VB code updates for insert, update, and edit.
+
+## 2. **Active/Inactive Filtering via Toggle**
+Show only **Active** or **Inactive** KPIs using a toggle.
+
+- **Stored Proc**
+  - `GetAllKPITable` now accepts a `@Status` parameter (`'Y'`, `'N'`).
+- **UI (ASPX/VB Code)**
+  - Toggle control above GridView.
+  - VB code updates parameter to filter on toggle.
+
+## 3. **Sorting on Any Field (Asc/Desc) via UI Arrows**
+Clickable up/down arrows beside each column header—users can sort on any field.
+
+- **Stored Proc**
+  - `GetAllKPITable` enhanced to support `@SortColumn` and `@SortDirection` parameters; ORDER BY built dynamically.
+- **UI (ASPX/VB Code)**
+  - Each GridView column: up/down arrow buttons beside header.
+  - VB code updates current sort column/direction and calls stored proc.
+
+# Deployment Attachments
+
+*(Below are placeholders for your deployment .txt/code files. Replace each section with your actual code before final packaging/distribution.)*
+
+## **Table Change TXT File**  
+**KPITable_Alter.txt**
+
+```sql
 -- Example:
 ALTER TABLE KPITable
   ADD Constraints VARCHAR(255) NULL,
       Subject_Matter_Expert_Email VARCHAR(255) NULL;
 -- Adjust types/length as needed
-Stored Proc TXT Files
-InsertKPI_Alter.txt
+```
 
-sql
+## **Stored Proc TXT Files**
+
+**InsertKPI_Alter.txt**
+
+```sql
 -- Show full CREATE or ALTER proc with added @Constraints and @Subject_Matter_Expert_Email
-UpdateKPIByID_Alter.txt
+```
 
-sql
+**UpdateKPIByID_Alter.txt**
+
+```sql
 -- Show full CREATE or ALTER proc with added @Constraints and @Subject_Matter_Expert_Email
-GetAllKPITable_Alter.txt
+```
 
-sql
+**GetAllKPITable_Alter.txt**
+
+```sql
 -- Full proc:
 -- 1. SELECT added columns
 -- 2. Parameters: @Status, @SortColumn, @SortDirection
 -- 3. ORDER BY dynamic
 -- 4. Logic to avoid duplicate ordering columns
-UI Files
-ASPX
-KPI-Library.aspx.txt
+```
 
-text
+## **UI Files**
+
+### ASPX
+**KPI-Library.aspx.txt**
+
+```aspx
 <!--
 - New fields in modal (for Constraints, SME Email)
 - GridView
@@ -116,10 +163,12 @@ text
 - DataKeyNames="KPI ID"
 - Each TemplateField for each data column
 -->
-VB.NET Code-Behind
-KPI-Library.aspx.vb.txt
+```
 
-text
+### VB.NET Code-Behind
+**KPI-Library.aspx.vb.txt**
+
+```vb
 ' Updates to:
 ' - btnSubmit_Click: handle Constraints and SME Email on add/update
 ' - LoadEditData: populate new fields in edit mode
@@ -127,8 +176,24 @@ text
 ' - Active filter toggle logic
 ' - Sorting logic (ViewState, DataSource parameters)
 ' - Use DataKeys for fetching KPI ID in LoadEditData
-(Optional) Designer File
-KPI-Library.aspx.designer.vb.txt
+```
 
-text
+### (Optional) Designer File  
+**KPI-Library.aspx.designer.vb.txt**
+
+```vb
 ' Only update if you have new controls that must appear in strongly-typed variables
+```
+
+## **How to Use**
+
+- Copy each code section into its matching .txt file and include in your deployment/QA checklist.
+- Each section here maps one-to-one to a deployment or code review task.
+- Under each placeholder, paste your actual, fully tested SQL or ASPX/VB.NET code.
+
+**End of documentation.**  
+(Paste files below this line as needed.)
+
+Citations:
+[1] KPI-Library.aspx https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/7f220faf-dad9-4aac-8bda-3b6b9b2f10ce/KPI-Library.aspx
+[2] Kpi-Library.aspx.vb https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/d3ee7600-36e4-4070-844a-376c0d7ca2ed/Kpi-Library.aspx.vb
