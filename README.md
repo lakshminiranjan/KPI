@@ -70,3 +70,65 @@ Certainly! Here’s concise and clear release documentation for **v2.0**, organi
 Citations:
 [1] KPI-Library.aspx https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/7f220faf-dad9-4aac-8bda-3b6b9b2f10ce/KPI-Library.aspx
 [2] Kpi-Library.aspx.vb https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/d3ee7600-36e4-4070-844a-376c0d7ca2ed/Kpi-Library.aspx.vb
+
+
+Deployment Attachments
+(Below are placeholders for your deployment .txt/code files. Replace each section with your actual code before final packaging/distribution.)
+
+Table Change TXT File
+KPITable_Alter.txt
+
+sql
+-- Example:
+ALTER TABLE KPITable
+  ADD Constraints VARCHAR(255) NULL,
+      Subject_Matter_Expert_Email VARCHAR(255) NULL;
+-- Adjust types/length as needed
+Stored Proc TXT Files
+InsertKPI_Alter.txt
+
+sql
+-- Show full CREATE or ALTER proc with added @Constraints and @Subject_Matter_Expert_Email
+UpdateKPIByID_Alter.txt
+
+sql
+-- Show full CREATE or ALTER proc with added @Constraints and @Subject_Matter_Expert_Email
+GetAllKPITable_Alter.txt
+
+sql
+-- Full proc:
+-- 1. SELECT added columns
+-- 2. Parameters: @Status, @SortColumn, @SortDirection
+-- 3. ORDER BY dynamic
+-- 4. Logic to avoid duplicate ordering columns
+UI Files
+ASPX
+KPI-Library.aspx.txt
+
+text
+<!--
+- New fields in modal (for Constraints, SME Email)
+- GridView
+    * Add two new columns for Constraints and SME Email
+    * Toggle switch for active/inactive filter
+    * Up/Down arrows for sorting on each column
+    * Edit button as first column
+- DataKeyNames="KPI ID"
+- Each TemplateField for each data column
+-->
+VB.NET Code-Behind
+KPI-Library.aspx.vb.txt
+
+text
+' Updates to:
+' - btnSubmit_Click: handle Constraints and SME Email on add/update
+' - LoadEditData: populate new fields in edit mode
+' - GridView1_RowCommand: support Edit and CustomSort
+' - Active filter toggle logic
+' - Sorting logic (ViewState, DataSource parameters)
+' - Use DataKeys for fetching KPI ID in LoadEditData
+(Optional) Designer File
+KPI-Library.aspx.designer.vb.txt
+
+text
+' Only update if you have new controls that must appear in strongly-typed variables
