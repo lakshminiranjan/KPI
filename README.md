@@ -197,3 +197,14 @@ ALTER TABLE KPITable
 Citations:
 [1] KPI-Library.aspx https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/7f220faf-dad9-4aac-8bda-3b6b9b2f10ce/KPI-Library.aspx
 [2] Kpi-Library.aspx.vb https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/d3ee7600-36e4-4070-844a-376c0d7ca2ed/Kpi-Library.aspx.vb
+
+
+Give description In 4-5 for this enhancement
+
+**Enhancement Description (in 4-5 lines):**
+
+This version introduces three key improvements to the KPI Management module. First, it adds two new data columns—Constraints and Subject Matter Expert Email—to the KPI record structure and updates all related database operations and user interfaces to support them. Second, it implements an intuitive toggle switch above the grid to filter KPIs based on their active or inactive status, with backend filtering via the status parameter. Third, it enables dynamic sorting for every grid column, allowing users to sort ascending or descending using interactive arrow buttons, with all sorting handled efficiently on the database side for performance. These changes collectively improve data richness, usability, and flexibility for KPI management.
+
+Citations:
+[1] KPI-Library.aspx https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/7f220faf-dad9-4aac-8bda-3b6b9b2f10ce/KPI-Library.aspx
+[2] Kpi-Library.aspx.vb https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/d3ee7600-36e4-4070-844a-376c0d7ca2ed/Kpi-Library.aspx.vb
