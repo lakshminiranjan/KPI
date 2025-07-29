@@ -1,3 +1,19 @@
+
+
+**Brief Description (2 lines):**  
+This release enhances KPI management by adding two key data fields, advanced filtering for active/inactive KPIs, and per-column dynamic sorting with visual indicators. Users can now manage, filter, and sort KPIs far more flexibly and intuitively.
+
+**Three Main Change Points:**
+1. Added "Constraints" and "Subject Matter Expert Email" columns to KPITable, stored procedures, and all related UI and backend code.  
+2. Implemented a toggle to filter KPIs by active or inactive status, linked to backend filtering and UI state.  
+3. Enabled dynamic per-column sorting (ascending/descending) with clickable arrow buttons and active sort indicators, fully integrated with backend SQL sorting.
+
+Citations:
+[1] KPI-Library.aspx https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/9bcc087a-d932-4db9-bdec-c194605769f6/KPI-Library.aspx
+[2] Kpi-Library.aspx.vb https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/d8caab33-df8b-41a2-bcad-38091294345a/Kpi-Library.aspx.vb
+
+
+
 To document this enhancements as three major changes in this version 2.0 give like what and changed for each task. First added two new columns naming 'constraints' and 'Subject Matter expert email' which requires changes in Kpi table, insert, update, select all kpi stored proc, in UI aspx, vb code changes and second filtering kpis according to the active field which gives active/inactive according to the toggle implemented and requires changes in Get all kpis stored proc and ui changes in aspx, vb code and third change is that sorting each field by implementing ascending or descending the record by adding a button beside column names. This third task also require changes in get all kpis stored proc and in UI aspx, vb code. After  completing of describing three tasks leave space under documentation for txt files which will have sql queries and aspx, vb files that are need to be changed for deployment
 
 Certainly! Here’s concise and clear release documentation for **v2.0**, organized by the three major enhancements you introduced. Each section lists WHAT was changed, and WHERE (SQL, ASPX, VB.NET), in a technical "change log" style for stakeholders and deployment.
