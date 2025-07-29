@@ -149,6 +149,15 @@ Partial Public Class _Default
     Protected WithEvents txtDatasource As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
+    '''txtSection control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtSection As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
     '''chkActive control.
     '''</summary>
     '''<remarks>

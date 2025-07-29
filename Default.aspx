@@ -357,6 +357,7 @@
             <tr><td>Denominator:</td><td><asp:TextBox ID="txtDenom" runat="server" TextMode="MultiLine" Rows="3" /></td></tr>
             <tr><td>Unit:</td><td><asp:TextBox ID="txtUnit" runat="server" /></td></tr>
             <tr><td>Datasource:</td><td><asp:TextBox ID="txtDatasource" runat="server" /></td></tr>
+            <tr><td>KPI_Section:</td><td><asp:TextBox ID="txtSection" runat="server" /></td></tr>
             <tr><td>Active:</td><td><label class="toggle-switch"><asp:CheckBox ID="chkActive" runat="server" /><span class="slider"></span></label></td></tr>
             <tr><td>FLAG_DIVISINAL:</td><td><label class="toggle-switch"><asp:CheckBox ID="chkFlagDivisinal" runat="server" /><span class="slider"></span></label></td></tr>
             <tr><td>FLAG_VENDOR:</td><td><label class="toggle-switch"><asp:CheckBox ID="chkFlagVendor" runat="server" /><span class="slider"></span></label></td></tr>
@@ -399,6 +400,7 @@
             <asp:Parameter Name="Unit" />
             <asp:Parameter Name="Datasource" />
             <asp:Parameter Name="OrderWithinSecton" />
+            <asp:Parameter Name="KPI_Section" />
             <asp:Parameter Name="Active" />
             <asp:Parameter Name="FLAG_DIVISINAL" />
             <asp:Parameter Name="FLAG_VENDOR" />
@@ -421,6 +423,7 @@
             <asp:Parameter Name="Unit" />
             <asp:Parameter Name="Datasource" />
             <asp:Parameter Name="OrderWithinSecton" />
+            <asp:Parameter Name="KPI_Section" />
             <asp:Parameter Name="Active" />
             <asp:Parameter Name="FLAG_DIVISINAL" />
             <asp:Parameter Name="FLAG_VENDOR" />
@@ -599,21 +602,37 @@
         </HeaderTemplate>
         <ItemTemplate><%# Eval("Datasource") %></ItemTemplate>
     </asp:TemplateField>
+
     <asp:TemplateField HeaderText="Order" SortExpression="OrderWithinSecton">
-        <HeaderTemplate>
-            <div class="sortable-header">
-                Order
-                <span class="sort-arrows">
-                    <asp:LinkButton ID="btnSortUpOrder" runat="server" CommandName="CustomSort"
-                        CommandArgument="OrderWithinSecton|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
-                    <asp:LinkButton ID="btnSortDownOrder" runat="server" CommandName="CustomSort"
-                        CommandArgument="OrderWithinSecton|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
-                </span>
-                <asp:Label ID="lblCurrentSortOrder" runat="server" CssClass="sort-indicator"></asp:Label>
-            </div>
-        </HeaderTemplate>
-        <ItemTemplate><%# Eval("OrderWithinSecton") %></ItemTemplate>
-    </asp:TemplateField>
+    <HeaderTemplate>
+        <div class="sortable-header">
+            Order
+            <span class="sort-arrows">
+                <asp:LinkButton ID="btnSortUpOrder" runat="server" CommandName="CustomSort" CommandArgument="OrderWithinSecton|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
+                <asp:LinkButton ID="btnSortDownOrder" runat="server" CommandName="CustomSort" CommandArgument="OrderWithinSecton|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
+            </span>
+            <asp:Label ID="lblCurrentSortOrder" runat="server" CssClass="sort-indicator"></asp:Label>
+        </div>
+    </HeaderTemplate>
+    <ItemTemplate><%# Eval("OrderWithinSecton") %></ItemTemplate>
+</asp:TemplateField>
+
+
+        <asp:TemplateField HeaderText="Section" SortExpression="KPI_Section">
+    <HeaderTemplate>
+        <div class="sortable-header">
+            Section
+            <span class="sort-arrows">
+                <asp:LinkButton ID="btnSortUpSection" runat="server" CommandName="CustomSort"
+                    CommandArgument="KPI_Section|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
+                <asp:LinkButton ID="btnSortDownSection" runat="server" CommandName="CustomSort"
+                    CommandArgument="KPI_Section|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
+            </span>
+            <asp:Label ID="lblCurrentSortSection" runat="server" CssClass="sort-indicator"></asp:Label>
+        </div>
+    </HeaderTemplate>
+    <ItemTemplate><%# Eval("KPI_Section") %></ItemTemplate>
+</asp:TemplateField>
     <asp:TemplateField HeaderText="Active" SortExpression="Active">
         <HeaderTemplate>
             <div class="sortable-header">

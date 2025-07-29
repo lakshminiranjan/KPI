@@ -74,6 +74,7 @@ Partial Public Class _Default
         Dim unit As String = CleanInput(txtUnit.Text)
         Dim datasource As String = CleanInput(txtDatasource.Text)
         Dim orderText As String = CleanInput(txtOrder.Text)
+        Dim section As String = CleanInput(txtSection.Text)
 
         ' Reset all error labels
         lblKPIError.Visible = False
@@ -178,6 +179,7 @@ Partial Public Class _Default
                 SqlDataSource1.UpdateParameters("Unit").DefaultValue = unit
                 SqlDataSource1.UpdateParameters("Datasource").DefaultValue = datasource
                 SqlDataSource1.UpdateParameters("OrderWithinSecton").DefaultValue = orderValue.ToString()
+                SqlDataSource1.UpdateParameters("KPI_Section").DefaultValue = section
                 SqlDataSource1.UpdateParameters("Active").DefaultValue = If(chkActive.Checked, "Y", "N")
                 SqlDataSource1.UpdateParameters("FLAG_DIVISINAL").DefaultValue = If(chkFlagDivisinal.Checked, "Y", "N")
                 SqlDataSource1.UpdateParameters("FLAG_VENDOR").DefaultValue = If(chkFlagVendor.Checked, "Y", "N")
@@ -200,6 +202,7 @@ Partial Public Class _Default
                 SqlDataSource1.InsertParameters("Unit").DefaultValue = unit
                 SqlDataSource1.InsertParameters("Datasource").DefaultValue = datasource
                 SqlDataSource1.InsertParameters("OrderWithinSecton").DefaultValue = orderValue.ToString()
+                SqlDataSource1.InsertParameters("KPI_Section").DefaultValue = section
                 SqlDataSource1.InsertParameters("Active").DefaultValue = If(chkActive.Checked, "Y", "N")
                 SqlDataSource1.InsertParameters("FLAG_DIVISINAL").DefaultValue = If(chkFlagDivisinal.Checked, "Y", "N")
                 SqlDataSource1.InsertParameters("FLAG_VENDOR").DefaultValue = If(chkFlagVendor.Checked, "Y", "N")
@@ -276,6 +279,7 @@ Partial Public Class _Default
                         txtUnit.Text = reader("Unit").ToString()
                         txtDatasource.Text = reader("Datasource").ToString()
                         txtOrder.Text = reader("OrderWithinSecton").ToString()
+                        txtSection.Text = reader("KPI_Section").ToString()
                         chkActive.Checked = reader("Active").ToString().ToUpper() = "Y"
                         chkFlagDivisinal.Checked = reader("FLAG_DIVISINAL").ToString().ToUpper() = "Y"
                         chkFlagVendor.Checked = reader("FLAG_VENDOR").ToString().ToUpper() = "Y"
@@ -312,6 +316,7 @@ Partial Public Class _Default
         txtUnit.Text = ""
         txtDatasource.Text = ""
         txtOrder.Text = ""
+        txtSection.Text = ""
         txtKPIID.Enabled = True
 
         chkActive.Checked = False
@@ -371,6 +376,7 @@ Partial Public Class _Default
             For i As Integer = 0 To GridView1.Columns.Count - 1
                 Dim tf = TryCast(GridView1.Columns(i), TemplateField)
                 If tf IsNot Nothing AndAlso Not String.IsNullOrEmpty(tf.SortExpression) Then
+                    System.Diagnostics.Debug.WriteLine("Column " & i & ": SortExpression = " & tf.SortExpression & ", Current SortColumn = " & SortColumn)
                     Dim cell = e.Row.Cells(i)
                     Dim lblSort As Label = Nothing
                     Select Case tf.SortExpression
@@ -394,6 +400,8 @@ Partial Public Class _Default
                             lblSort = TryCast(cell.FindControl("lblCurrentSortDS"), Label)
                         Case "OrderWithinSecton"
                             lblSort = TryCast(cell.FindControl("lblCurrentSortOrder"), Label)
+                        Case "KPI_Section"
+                            lblSort = TryCast(cell.FindControl("lblCurrentSortSection"), Label)
                         Case "Active"
                             lblSort = TryCast(cell.FindControl("lblCurrentSortActive"), Label)
                         Case "FLAG_DIVISINAL"
