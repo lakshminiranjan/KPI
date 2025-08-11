@@ -224,3 +224,70 @@ This version introduces three key improvements to the KPI Management module. Fir
 Citations:
 [1] KPI-Library.aspx https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/7f220faf-dad9-4aac-8bda-3b6b9b2f10ce/KPI-Library.aspx
 [2] Kpi-Library.aspx.vb https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/d3ee7600-36e4-4070-844a-376c0d7ca2ed/Kpi-Library.aspx.vb
+
+
+Please give release. Notes for KPI Library version 2.0
+
+Here are the **Release Notes** for **KPI Library version 2.0**:
+
+***
+
+# KPI Library v2.0 – Release Notes
+
+## Overview
+KPI Library v2.0 introduces major enhancements for improved data management, user convenience, and reporting flexibility. Three principal improvements have been made: expanded data columns, powerful filtering, and a complete upgrade to grid sorting and usability.
+
+***
+
+## Key Enhancements
+
+### 1. **Expanded KPI Data Columns**
+- Two new fields, **Constraints** and **Subject Matter Expert Email**, have been added to KPI records.
+- The database table, all relevant stored procedures, UI forms, and grid views have been updated to support these fields.
+- Users can add, edit, and view constraint information and SME contact for each KPI.
+
+### 2. **Active/Inactive Filtering**
+- UI now includes an **Active/Inactive toggle switch**, allowing quick filter between active and inactive KPIs.
+- Backend filtering is optimized; only selected KPIs are queried and displayed.
+- The filter state persists on reload, and editing status is seamless.
+
+### 3. **Dynamic Column Sorting**
+- Every KPI grid column has clickable up/down arrows to sort values in ascending or descending order.
+- The current sort column and direction are visually indicated beside the column header.
+- Sorting is performed directly on the server for speed and accuracy.
+
+***
+
+## Other Changes & Fixes
+- Improved form validation for new fields.
+- Enhanced gridrow editing with robust data population regardless of grid sorting or filtering.
+- All updates maintain compatibility across browsers and fit with existing grid styling.
+- Bug fix: Sort indicators now appear correctly for all columns, including the "Order" field.
+
+***
+
+## Deployment Notes
+- **Database scripts**: ALTER TABLE for new columns; updated stored procedures for insert, update, and selection.
+- **UI files**: Updated ASPX (KPI-Library.aspx), code-behind (Kpi-Library.aspx.vb), designer files as necessary.
+- **Testing**: Test cases are available for Add/Edit KPI, sorting, filtering, indicator display, and validation.
+
+***
+
+## Known Issues & Compatibility
+- No major issues in this release.
+- Data migration is required for previous KPIs to populate the new columns, if needed.
+
+***
+
+## Attachments / Files for Deployment
+- SQL scripts and modified code files to be referenced in deployment documentation.
+- Complete test case matrix for QA is available in Excel format.
+
+***
+
+**This version delivers stronger data control, user interface improvements, and robust reporting features for all KPI management users.**
+
+Citations:
+[1] KPI-Library.aspx https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/9bcc087a-d932-4db9-bdec-c194605769f6/KPI-Library.aspx
+[2] Kpi-Library.aspx.vb https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/d8caab33-df8b-41a2-bcad-38091294345a/Kpi-Library.aspx.vb
+
