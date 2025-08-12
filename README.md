@@ -308,7 +308,8 @@ Certainly! Here are the **KPI Library v3.0 enhancement changes as a description*
 
 ***
 
-**Version 3.0 delivers clear classification (Subjective/Objective) and richer context (Comments) for every KPI, further improving data quality, analysis, and operational insight through the KPI management system.**
+KPI Library v3.0 Description (4-5 lines)
+KPI Library version 3.0 adds two valuable data points to every KPI: a clear Subjective/Objective classification and a free-form Comments field for extra context. Users can now select the KPI's nature via an easy dropdown in the add/edit dialog, and record detailed notes or observations. All backend logic and UI components fully support these new fields—data entry, editing, and reporting are seamless and robust. These enhancements offer deeper insight and flexibility for KPI administration and decision-making.
 
 Citations:
 [1] KPI-Library.aspx https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/9bcc087a-d932-4db9-bdec-c194605769f6/KPI-Library.aspx
