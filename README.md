@@ -315,3 +315,73 @@ Citations:
 [1] KPI-Library.aspx https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/9bcc087a-d932-4db9-bdec-c194605769f6/KPI-Library.aspx
 [2] Kpi-Library.aspx.vb https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/d8caab33-df8b-41a2-bcad-38091294345a/Kpi-Library.aspx.vb
 
+Give simialrly other also similar to the uploaded content in the specific headings
+
+Certainly! Here’s a documentation template **matching the style and headings appearing in your uploaded content**, with example entries for each major enhancement in KPI Library v3.0. Adjust or expand under the specific headings as needed.
+
+***
+
+## Risk Associated
+
+- There is no dependency of new Subjective/Objective or Comments columns with other elements of EMS. Addition of new columns is isolated to KPITable, so no risk.
+
+## Consequences of not performing change
+
+- User cannot classify KPIs as Subjective or Objective, nor provide comments/notes for context. This limits KPI tracking, reporting clarity, and knowledge transfer.
+
+## User/Jobs Service Impact during window
+
+- As these are isolated schema and UI enhancements, there will be no impact to existing EMS Services during deployment.
+
+***
+
+## Backout/Rollback Plan, in case of issue
+
+- Replace updated KPITable and stored procedures with previous backups.
+- Restore KPI-Library.aspx and related code-behind files from last stable version.
+
+***
+
+## UAT Sign Off
+
+- Please share change tracking number to mention in UAT sign-off email.
+
+***
+
+## Change Timelines
+
+- Post business hours UK time.
+
+***
+
+## Change Reason
+
+- This is a modification to enable KPI classification as Subjective or Objective and capture extended comments per KPI for better documentation, audit, and reporting.
+
+***
+
+## Verification Steps
+
+- Run the home page and add a new KPI: both Subjective/Objective dropdown and Comments field should appear.
+- Edit an existing KPI: verify values populate for both new fields.
+- GridView should show new columns for Subjective/Objective and Comments.
+
+***
+
+## Attachments/Deployment Files
+
+- [ ] KPITable_Alter.txt – SQL for adding new columns.
+- [ ] Stored Procedure TXT files (InsertKPI, UpdateKPIByID, GetAllKPITable).
+- [ ] KPI-Library.aspx.txt – UI changes for dropdown/comments field and new grid columns.
+- [ ] KPI-Library.aspx.vb.txt – Backend logic for new fields.
+
+***
+
+**You can create similar sections for every major future enhancement, just as shown above.  
+Let me know if you want sample content for v2.0 or 1.0 in the same format!**
+
+Citations:
+[1] selected_image_1517920012712372059.jpg https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/images/12938409/87b65f21-c631-433f-92df-54e79dba9793/selected_image_1517920012712372059.jpg?AWSAccessKeyId=ASIA2F3EMEYE45FSIXTD&Signature=hZdZQsBn%2BDV6NYLKetUCI2wK4Yg%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEMz%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJGMEQCIDxq%2BPuNWnBfa%2FwXN8FjSRWHTbwDR2lR4mTlCu4z5EuvAiB6uioSFKC%2Bwojk77dUjfq8NwvMtiQHa4kZqGxP3wngtirxBAgVEAEaDDY5OTc1MzMwOTcwNSIM16pJGaiPgOAzgG7WKs4EOl0ezJlUXDgybQo6AriFXyFTk12Z15K%2FceeuttogMNkBA6KbfftM2oM7D1qSc45YmaknyZIs1amRO341Qh6ugoLnG3NsO%2FsBx0hyOtLV68Ux6LN7E5cKOav8uyAyQUBp7lLjQBk38BebSpt4%2BrGyyN8O9kt5Biql7VnrIxMkvQVwfrE9HZm60vJ6UCiTKQW8M%2Fr10MBF0g%2BvDOHty3qDsYe1CfRK9AhJn1T%2F7R6g31vdT3A4AvcsnPU6sR1OqTfkoulGAMK3S2L4i45cf16Sof3UUF%2BpoKapJT4XmKooL%2Bd%2FCKsBY%2FzJW%2BjEKrO%2B4wcb6ctLDHjY9pNcQvinhbufjOTvwmhylMXkwsQGGRpwg1eWKDRyrPB0IYbwYlByzXyvTI%2FDOBKTtTYC1QDfQ%2FI8Xorrq6sl9k01XX%2Fknik%2Ful%2FrmaJVilmI5WHYDs95Kzrbi9liaSGdKv1ljzuoARrJJCsyR5hot6DF1HZTS8MDOISHIz0uiV5ZeXAWKSsJptnDuuIXR4uvjKxSsBKCFwe4Bkz0zi1czGufX1vJ2oqERQ7aKEoJ1xJhfRu7ztxXe2gfsb953zw1vgzteApU1h0JOxqF7Ch%2BHtF7eLOC8Uk5JP3fAXGFcKYhN2EF%2ByikauEkfdc6twHw3AtYtfiuGLg3MxauCgPji9atWKGKSVWEMOwzkE38V3TRP6piuex%2FkPXtIy7LwAxOy5zFlRzUhulilDGDXRO7I5fCfB6JNzUDrCrhgxtoIEpZJVpbCBO5V%2F1AvBQdXmWPNhT7ng5sC8Iwsc7sxAY6mwE6EowCVZ7oWB4SwAo%2FrHTtN6SPhAmuyrzjTqBIfNSO%2FxK1lzDIr9b%2BmOaK5xHBafATuhvY8srPvx2O%2BZ%2FIJVMllb0f3tgVNcRP8gQ9CdPF7%2BTmcAy7DizkRnvqK1EjbOzBI9ZGxNAgFtd3Y4xfx6vm01rrjvXVY7MeFD%2BAZXC0sKqcnTkzYJzkiML5TqxL3FP4xlIGop7asMMg7Q%3D%3D&Expires=1755001510
+[2] selected_image_4407633815027693963.jpg https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/images/12938409/6edc57c2-b895-46ff-90e1-19cc8795d805/selected_image_4407633815027693963.jpg?AWSAccessKeyId=ASIA2F3EMEYE45FSIXTD&Signature=TjGGhfWP0fksk0lx7%2FyD%2BRZe%2BeQ%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEMz%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJGMEQCIDxq%2BPuNWnBfa%2FwXN8FjSRWHTbwDR2lR4mTlCu4z5EuvAiB6uioSFKC%2Bwojk77dUjfq8NwvMtiQHa4kZqGxP3wngtirxBAgVEAEaDDY5OTc1MzMwOTcwNSIM16pJGaiPgOAzgG7WKs4EOl0ezJlUXDgybQo6AriFXyFTk12Z15K%2FceeuttogMNkBA6KbfftM2oM7D1qSc45YmaknyZIs1amRO341Qh6ugoLnG3NsO%2FsBx0hyOtLV68Ux6LN7E5cKOav8uyAyQUBp7lLjQBk38BebSpt4%2BrGyyN8O9kt5Biql7VnrIxMkvQVwfrE9HZm60vJ6UCiTKQW8M%2Fr10MBF0g%2BvDOHty3qDsYe1CfRK9AhJn1T%2F7R6g31vdT3A4AvcsnPU6sR1OqTfkoulGAMK3S2L4i45cf16Sof3UUF%2BpoKapJT4XmKooL%2Bd%2FCKsBY%2FzJW%2BjEKrO%2B4wcb6ctLDHjY9pNcQvinhbufjOTvwmhylMXkwsQGGRpwg1eWKDRyrPB0IYbwYlByzXyvTI%2FDOBKTtTYC1QDfQ%2FI8Xorrq6sl9k01XX%2Fknik%2Ful%2FrmaJVilmI5WHYDs95Kzrbi9liaSGdKv1ljzuoARrJJCsyR5hot6DF1HZTS8MDOISHIz0uiV5ZeXAWKSsJptnDuuIXR4uvjKxSsBKCFwe4Bkz0zi1czGufX1vJ2oqERQ7aKEoJ1xJhfRu7ztxXe2gfsb953zw1vgzteApU1h0JOxqF7Ch%2BHtF7eLOC8Uk5JP3fAXGFcKYhN2EF%2ByikauEkfdc6twHw3AtYtfiuGLg3MxauCgPji9atWKGKSVWEMOwzkE38V3TRP6piuex%2FkPXtIy7LwAxOy5zFlRzUhulilDGDXRO7I5fCfB6JNzUDrCrhgxtoIEpZJVpbCBO5V%2F1AvBQdXmWPNhT7ng5sC8Iwsc7sxAY6mwE6EowCVZ7oWB4SwAo%2FrHTtN6SPhAmuyrzjTqBIfNSO%2FxK1lzDIr9b%2BmOaK5xHBafATuhvY8srPvx2O%2BZ%2FIJVMllb0f3tgVNcRP8gQ9CdPF7%2BTmcAy7DizkRnvqK1EjbOzBI9ZGxNAgFtd3Y4xfx6vm01rrjvXVY7MeFD%2BAZXC0sKqcnTkzYJzkiML5TqxL3FP4xlIGop7asMMg7Q%3D%3D&Expires=1755001510
+
+
