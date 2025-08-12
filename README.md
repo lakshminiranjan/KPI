@@ -291,3 +291,26 @@ Citations:
 [1] KPI-Library.aspx https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/9bcc087a-d932-4db9-bdec-c194605769f6/KPI-Library.aspx
 [2] Kpi-Library.aspx.vb https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/d8caab33-df8b-41a2-bcad-38091294345a/Kpi-Library.aspx.vb
 
+
+No need to give changes in code just give changes as description please
+
+Certainly! Here are the **KPI Library v3.0 enhancement changes as a description** (without direct code):
+
+***
+
+### KPI Library 3.0 – Enhancement Description
+
+- **Database/schema:** Two new columns have been added to each KPI record: **Subjective/Objective** (VARCHAR(15)) to classify the KPI type, and **Comments** (VARCHAR(MAX)) to store extended free-text information or notes.
+- **Procedures and data handling:** All insert, update, and select procedures now support these new fields, ensuring that values are captured, stored, and displayed whenever a KPI is created or modified.
+- **User Interface (Add/Edit):** The KPI add/edit popup now includes a dropdown beside "Subjective/Objective" allowing selection between those two values, and a multi-line comments field to input any remarks.
+- **Grid/List View:** The main KPI grid includes new columns to display each KPI’s Subjective/Objective classification and any associated comments.
+- **Workflow:** Whenever a KPI record is added or modified, both the Subjective/Objective dropdown choice and the entered comments are saved, displayed, and available for reporting, allowing deeper context and more precise categorization of KPIs.
+
+***
+
+**Version 3.0 delivers clear classification (Subjective/Objective) and richer context (Comments) for every KPI, further improving data quality, analysis, and operational insight through the KPI management system.**
+
+Citations:
+[1] KPI-Library.aspx https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/9bcc087a-d932-4db9-bdec-c194605769f6/KPI-Library.aspx
+[2] Kpi-Library.aspx.vb https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/d8caab33-df8b-41a2-bcad-38091294345a/Kpi-Library.aspx.vb
+
