@@ -95,6 +95,17 @@
             border-bottom: 1px solid #ccc;
         }
 
+        .error-msg {
+        display: none;
+        color: #b00020;
+        margin-top: 4px;
+        font-size: 12px;
+        }
+        .field-invalid {
+        border-color: #b00020;
+        box-shadow: 0 0 0 2px rgba(176, 0, 32, 0.15);
+        }
+
     </style>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -338,6 +349,87 @@
                 hideElement(lblKPIError);
             }
         }
+
+        function showFieldError(labelClientId, inputClientId, message) {
+            var lbl = document.getElementById(labelClientId);
+            var inp = document.getElementById(inputClientId);
+
+            if (lbl) {
+                lbl.innerText = message || "";
+                lbl.style.display = message ? "block" : "none";
+            }
+            if (inp) {
+                if (message) {
+                    inp.classList.add("field-invalid");
+                    try { inp.focus(); } catch (e) { }
+                    inp.scrollIntoView({ behavior: "smooth", block: "center" });
+                } else {
+                    inp.classList.remove("field-invalid");
+                }
+            }
+        }
+
+        function validateOrderDynamic() {
+            var orderEl = document.getElementById('<%= txtOrder.ClientID %>');
+            var metricEl = document.getElementById('<%= txtMetric.ClientID %>');
+            var kpiIdEl = document.getElementById('<%= txtKPIID.ClientID %>');
+            var lblOrder = '<%= lblOrderError.ClientID %>';
+
+            var orderVal = orderEl ? orderEl.value.trim() : "";
+            var metricVal = metricEl ? metricEl.value.trim() : "";
+            var kpiIdVal = kpiIdEl ? kpiIdEl.value.trim() : "";
+
+            if (!/^\d+$/.test(orderVal)) {
+            showFieldError(lblOrder, '<%= txtOrder.ClientID %>', "Order must be a whole number between 1 and 999.");
+            return;
+        }
+
+            var n = parseInt(orderVal, 10);
+            if (n < 1 || n > 999) {
+                showFieldError(lblOrder, '<%= txtOrder.ClientID %>', "Order must be between 1 and 999.");
+                return;
+        }
+            
+            if (!metricVal) {
+                showFieldError(lblOrder, '<%= txtOrder.ClientID %>', "");
+                return;
+                    }
+            
+                var payload = JSON.stringify({
+                  metric: metricVal,
+                  orderWithinSecton: n,
+                  originalKpiId: kpiIdVal
+                });
+            
+                fetch('<%= ResolveUrl("~/KPI-Library.aspx/ValidateOrder") %>', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json; charset=utf-8' },
+                  body: payload,
+                  credentials: 'same-origin'
+                })
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                  var result = (data && data.d) ? data.d : { isValid: true, message: "" };
+                  if (!result.isValid) {
+                    showFieldError(lblOrder, '<%= txtOrder.ClientID %>', result.message || "Invalid order.");
+                  } else {
+                    showFieldError(lblOrder, '<%= txtOrder.ClientID %>', "");
+                  }
+                })
+                .catch(function () {
+                  showFieldError(lblOrder, '<%= txtOrder.ClientID %>', "");
+                });
+              }
+            
+              document.addEventListener('DOMContentLoaded', function () {
+                var orderEl  = document.getElementById('<%= txtOrder.ClientID %>');
+                var metricEl = document.getElementById('<%= txtMetric.ClientID %>');
+                var kpiIdEl = document.getElementById('<%= txtKPIID.ClientID %>');
+            
+                  if (orderEl) { orderEl.addEventListener('blur', validateOrderDynamic); }
+                  if (metricEl) { metricEl.addEventListener('blur', validateOrderDynamic); }
+                  if (kpiIdEl) { kpiIdEl.addEventListener('blur', validateOrderDynamic); }
+              });
     </script>
 
     <asp:Button ID="btnLogout" runat="server" Text="Logout" CssClass="btn-edit" OnClick="btnLogout_Click" Style="float:right; margin:10px;" />
@@ -351,7 +443,7 @@
             <tr><td>Name:</td><td><asp:TextBox ID="txtKPIName" runat="server" /><asp:Label ID="lblDuplicateMetricKPIError" runat="server"   ForeColor="Red" Style="color: red;font-size: 12px; margin-top:5px;display:block;"  /></td></tr>
             <tr><td>KPI ID:</td><td><asp:TextBox ID="txtKPIID" runat="server" /><asp:Label ID="lblKPIError" runat="server" CssClass="error-span" Text="KPI ID already exists" ForeColor="Red" Visible="false" /></td></tr>
             <tr><td>Short Desc:</td><td><asp:TextBox ID="txtShortDesc" runat="server" TextMode="MultiLine" Rows="3" /></td></tr>
-            <tr><td>Order:</td><td><asp:TextBox ID="txtOrder" runat="server" /><asp:Label ID="lblOrderError" runat="server"   Text="Please add numbers between 1–999" ForeColor="Red" Style="color: red;font-size: 12px; margin-top:5px;display:block;"  /></td></tr>
+            <tr><td>Order:</td><td><asp:TextBox ID="txtOrder" runat="server" /><asp:Label ID="lblOrderError" runat="server"   CssClass="error-msg"  /></td></tr>
             <tr><td>Impact:</td><td><asp:TextBox ID="txtImpact" runat="server" TextMode="MultiLine" Rows="3" /></td></tr>
             <tr><td>Numerator:</td><td><asp:TextBox ID="txtNumerator" runat="server" TextMode="MultiLine" Rows="3" /></td></tr>
             <tr><td>Denominator:</td><td><asp:TextBox ID="txtDenom" runat="server" TextMode="MultiLine" Rows="3" /></td></tr>

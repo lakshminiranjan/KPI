@@ -439,4 +439,52 @@ Partial Public Class _Default
         Session.Abandon()
         Response.Redirect("Login.aspx")
     End Sub
+
+
+    <WebMethod()>
+    <ScriptMethod(ResponseFormat:=ResponseFormat.Json)>
+    Public Shared Function ValidateOrder(metric As String,
+                                     orderWithinSecton As Integer,
+                                     originalKpiId As String) As Object
+        If String.IsNullOrWhiteSpace(metric) Then
+            Return New With {.isValid = False, .message = "Metric is required to validate order."}
+        End If
+
+        If orderWithinSecton < 1 OrElse orderWithinSecton > 999 Then
+            Return New With {.isValid = False, .message = "Order must be between 1 and 999."}
+        End If
+
+        Try
+            Dim cs = ConfigurationManager.ConnectionStrings("MyDatabase").ConnectionString
+            Using conn As New SqlConnection(cs)
+                conn.Open()
+                Using cmd As New SqlCommand("
+                SELECT COUNT(*)
+                FROM KPITable
+                WHERE [KPI or Standalone Metric] = @Metric
+                  AND OrderWithinSecton = @Order
+                  AND (
+                        @OriginalKPIID IS NULL OR @OriginalKPIID = '' OR [KPI ID] <> @OriginalKPIID
+                      )
+            ", conn)
+                    cmd.Parameters.AddWithValue("@Metric", metric.Trim())
+                    cmd.Parameters.AddWithValue("@Order", orderWithinSecton)
+                    cmd.Parameters.AddWithValue("@OriginalKPIID",
+                        If(String.IsNullOrWhiteSpace(originalKpiId),
+                           CType(DBNull.Value, Object),
+                           originalKpiId.Trim())
+                    )
+
+                    Dim cnt As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+                    If cnt > 0 Then
+                        Return New With {.isValid = False, .message = "No duplicate order allowed for the same metric."}
+                    End If
+                End Using
+            End Using
+
+            Return New With {.isValid = True, .message = ""}
+        Catch
+            Return New With {.isValid = True, .message = ""}
+        End Try
+    End Function
 End Class
