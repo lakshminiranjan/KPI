@@ -78,7 +78,8 @@ Partial Public Class _Default
 
         ' Reset all error labels
         lblKPIError.Visible = False
-        lblOrderError.Visible = False
+        lblOrderError.Text = ""
+        lblOrderError.Style("display") = "none"
         lblDuplicateMetricKPIError.Visible = False
 
         ' Basic field validation
@@ -296,7 +297,8 @@ Partial Public Class _Default
 
         ' Hide error labels when loading edit data
         lblKPIError.Visible = False
-        lblOrderError.Visible = False
+        lblOrderError.Text = ""
+        lblOrderError.Style("display") = "none"
         lblDuplicateMetricKPIError.Visible = False
 
         ScriptManager.RegisterStartupScript(Me, Me.GetType(), "ShowModal_" & Guid.NewGuid().ToString(), "showPopup(); hideKPIError();", True)
@@ -331,7 +333,8 @@ Partial Public Class _Default
 
         ' Hide all error labels
         lblKPIError.Visible = False
-        lblOrderError.Visible = False
+        lblOrderError.Text = ""
+        lblOrderError.Style("display") = "none"
         lblDuplicateMetricKPIError.Visible = False
     End Sub
 
@@ -443,9 +446,7 @@ Partial Public Class _Default
 
     <WebMethod()>
     <ScriptMethod(ResponseFormat:=ResponseFormat.Json)>
-    Public Shared Function ValidateOrder(metric As String,
-                                     orderWithinSecton As Integer,
-                                     originalKpiId As String) As Object
+    Public Shared Function ValidateOrder(metric As String, orderWithinSecton As Integer, originalKpiId As String) As Object
         If String.IsNullOrWhiteSpace(metric) Then
             Return New With {.isValid = False, .message = "Metric is required to validate order."}
         End If
@@ -463,17 +464,14 @@ Partial Public Class _Default
                 FROM KPITable
                 WHERE [KPI or Standalone Metric] = @Metric
                   AND OrderWithinSecton = @Order
-                  AND (
-                        @OriginalKPIID IS NULL OR @OriginalKPIID = '' OR [KPI ID] <> @OriginalKPIID
-                      )
+                  AND (@OriginalKPIID IS NULL OR @OriginalKPIID = '' OR [KPI ID] <> @OriginalKPIID)
             ", conn)
                     cmd.Parameters.AddWithValue("@Metric", metric.Trim())
                     cmd.Parameters.AddWithValue("@Order", orderWithinSecton)
                     cmd.Parameters.AddWithValue("@OriginalKPIID",
                         If(String.IsNullOrWhiteSpace(originalKpiId),
                            CType(DBNull.Value, Object),
-                           originalKpiId.Trim())
-                    )
+                           originalKpiId.Trim()))
 
                     Dim cnt As Integer = Convert.ToInt32(cmd.ExecuteScalar())
                     If cnt > 0 Then
@@ -487,5 +485,6 @@ Partial Public Class _Default
             Return New With {.isValid = True, .message = ""}
         End Try
     End Function
+
     'new chnages
 End Class
