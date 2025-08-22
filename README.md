@@ -385,3 +385,108 @@ Citations:
 [2] selected_image_4407633815027693963.jpg https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/images/12938409/6edc57c2-b895-46ff-90e1-19cc8795d805/selected_image_4407633815027693963.jpg?AWSAccessKeyId=ASIA2F3EMEYE45FSIXTD&Signature=TjGGhfWP0fksk0lx7%2FyD%2BRZe%2BeQ%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEMz%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJGMEQCIDxq%2BPuNWnBfa%2FwXN8FjSRWHTbwDR2lR4mTlCu4z5EuvAiB6uioSFKC%2Bwojk77dUjfq8NwvMtiQHa4kZqGxP3wngtirxBAgVEAEaDDY5OTc1MzMwOTcwNSIM16pJGaiPgOAzgG7WKs4EOl0ezJlUXDgybQo6AriFXyFTk12Z15K%2FceeuttogMNkBA6KbfftM2oM7D1qSc45YmaknyZIs1amRO341Qh6ugoLnG3NsO%2FsBx0hyOtLV68Ux6LN7E5cKOav8uyAyQUBp7lLjQBk38BebSpt4%2BrGyyN8O9kt5Biql7VnrIxMkvQVwfrE9HZm60vJ6UCiTKQW8M%2Fr10MBF0g%2BvDOHty3qDsYe1CfRK9AhJn1T%2F7R6g31vdT3A4AvcsnPU6sR1OqTfkoulGAMK3S2L4i45cf16Sof3UUF%2BpoKapJT4XmKooL%2Bd%2FCKsBY%2FzJW%2BjEKrO%2B4wcb6ctLDHjY9pNcQvinhbufjOTvwmhylMXkwsQGGRpwg1eWKDRyrPB0IYbwYlByzXyvTI%2FDOBKTtTYC1QDfQ%2FI8Xorrq6sl9k01XX%2Fknik%2Ful%2FrmaJVilmI5WHYDs95Kzrbi9liaSGdKv1ljzuoARrJJCsyR5hot6DF1HZTS8MDOISHIz0uiV5ZeXAWKSsJptnDuuIXR4uvjKxSsBKCFwe4Bkz0zi1czGufX1vJ2oqERQ7aKEoJ1xJhfRu7ztxXe2gfsb953zw1vgzteApU1h0JOxqF7Ch%2BHtF7eLOC8Uk5JP3fAXGFcKYhN2EF%2ByikauEkfdc6twHw3AtYtfiuGLg3MxauCgPji9atWKGKSVWEMOwzkE38V3TRP6piuex%2FkPXtIy7LwAxOy5zFlRzUhulilDGDXRO7I5fCfB6JNzUDrCrhgxtoIEpZJVpbCBO5V%2F1AvBQdXmWPNhT7ng5sC8Iwsc7sxAY6mwE6EowCVZ7oWB4SwAo%2FrHTtN6SPhAmuyrzjTqBIfNSO%2FxK1lzDIr9b%2BmOaK5xHBafATuhvY8srPvx2O%2BZ%2FIJVMllb0f3tgVNcRP8gQ9CdPF7%2BTmcAy7DizkRnvqK1EjbOzBI9ZGxNAgFtd3Y4xfx6vm01rrjvXVY7MeFD%2BAZXC0sKqcnTkzYJzkiML5TqxL3FP4xlIGop7asMMg7Q%3D%3D&Expires=1755001510
 
 
+
+
+
+Similar way implement same thing to export to XLS down to active kpis toggle in this KPI Library please, give exact where code changes need to be done
+
+Absolutely! Here are the **exact steps and code blocks** to add an “Export to XLS” button (using DevExpress/ASPxGridViewExporter) below your Active KPIs toggle, so it exports your KPI Library just like in your screenshots.
+
+***
+
+## 1. Add the Export Button in ASPX (under Active KPIs Toggle)
+
+**Find this block in your ASPX, soon after the Active KPIs toggle:**
+```aspx
+<div style="margin-bottom:18px;">
+    <span id="toggleLabel" runat="server" style="font-weight:bold;">Active</span>
+    <label class="toggle-switch" style="vertical-align:middle;margin:0 10px;">
+        <asp:CheckBox ID="chkShowActive" runat="server" AutoPostBack="true" OnCheckedChanged="chkShowActive_CheckedChanged" />
+        <span class="slider"></span>
+    </label>
+</div>
+```
+
+**Add the following table (button) **IMMEDIATELY BELOW** the above code:**
+```aspx
+<table class="ExportButtons">
+    <tr>
+        <td style="padding-top:4px; padding-bottom:2px;">
+            <dx:ASPxButton ID="btnXlsExport" runat="server" Text="Export to XLS"
+                ClientInstanceName="btnXlsExport" 
+                OnClick="btnXlsExport_Click"
+                UseSubmitBehavior="false" />
+        </td>
+    </tr>
+</table>
+```
+
+***
+
+## 2. Add the ASPxGridViewExporter Control
+
+**Place this right after your main ASPxGridView (GridViewEditor) and before the closing </div> or </asp:Content>:**
+```aspx
+<dx:ASPxGridViewExporter ID="gridExport" runat="server" GridViewID="GridViewEditor"></dx:ASPxGridViewExporter>
+```
+
+***
+
+## 3. Add the Export Handler in Code-Behind
+
+**In your Default.aspx.vb (or KPI-Library.aspx.vb), add this at the bottom (but inside your Page class!):**
+```vbnet
+Protected Sub btnXlsExport_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Dim options As New DevExpress.XtraPrinting.XlsxExportOptionsEx() With {
+        .ExportType = DevExpress.Export.ExportType.WYSIWYG,
+        .TextExportMode = DevExpress.Export.TextExportMode.Value,
+        .ShowGridLines = False
+    }
+    gridExport.WriteXlsxToResponse("KPI_Library_Export", options)
+End Sub
+```
+**(If you use different namespaces for XlsxExportOptionsEx, adjust accordingly. For DevExpress 19+ it’s as above.)**
+
+***
+
+## 4. Ensure Required References/Namespaces
+
+**At the top of your code-behind, make sure you have:**
+```vbnet
+Imports DevExpress.XtraPrinting
+Imports DevExpress.Export
+```
+  
+***
+
+## 5. Double Check Key Details
+
+- The `GridViewID="GridViewEditor"` must match the ID of your main <dx:ASPxGridView ... /> that shows the grid.
+- If your KPI grid uses a different ID, use that in the `GridViewID` property for the exporter.
+
+***
+
+## 6. Save, Build, and Test
+
+- Go to the page, click the “Export to XLS” button under the toggle, and your export will download the grid as Excel.
+
+***
+
+### **Summary:**
+**ASPX**
+- Add ASPxButton for export under toggle.
+- Add ASPxGridViewExporter after your grid.
+
+**VB.NET**
+- Add an `btnXlsExport_Click` handler as shown above.
+
+That’s it! Now you’ll have the export functionality right below the Active KPIs toggle—works exactly like your screens. If you want to style the button or change “Export to XLS” text, just edit the button’s `Text` property.
+
+Citations:
+[1] selected_image_1284083392008783659.jpg https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/images/12938409/abce6bb6-45f7-4094-ae34-34154b9ae761/selected_image_1284083392008783659.jpg?AWSAccessKeyId=ASIA2F3EMEYEW6LQCDKD&Signature=aId5VdhslesgTHO50wmFDJQvh3A%3D&x-amz-security-token=IQoJb3JpZ2luX2VjELn%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJGMEQCIFa7iKil6D%2FYq0Swk%2FqAI9dVea8R%2BApw78F3MRCioEO4AiBnksKRcey4lKbPbBFP8Cb9S40g68XdiV4qaZ4jyXEXzirxBAgSEAEaDDY5OTc1MzMwOTcwNSIMxctwhUelRKKTiTLRKs4EvLdGpzhg%2F4jbJRGuQQjyv%2FlOfp09LAVDtrURMznn7M7ri5GxZHEeap%2FtnFWKbo9ZcBk4r3txpBjcyTHv0NuoDKETG8A1kitPqDwTf0po%2FnL2woKbnznUpZJnIiXlntZOC3D3pWjzUrwxj454eN0eO3fOyWRsWUguj6IEkJiXj3KZHBRrQfh1NUySzDLxaPNjWLBhlrL5T%2Fdwa4sMxMd8tWq6DRPDmsYtbZm%2B2OPUpbw%2BLh%2BJ7C9zwGQz963Z%2FDfekRPl1otCo0%2FEeXEO1z3V72o5byL2unTyYqgTyG%2Flao3uG3%2FeWxLsRSS5fKVamn1Lr6QYrpyDYCN%2FNxRu%2BKZy%2F5mCt%2FhsaH%2BV0Utu3t3d7se6QRUwy3GvDTy%2B1Oi%2BkRSPEZPSpuCnRpzDVrqs5uzSq4G%2B%2BcEnfw17IGgthBnMIi3RmQvD%2FtfL34xhHnqiVCkXLbPieTIDu%2F%2BMUruUZ71mz3Hn4CbRLotyh2cCnhamP2lKkf68pv5MeSwt%2F2t5%2FW%2BIKJq%2BVXyXcvAutu56pHVfxWEujx1%2ByHiBVXDqPjQtr2sJ0nPZgxiDDuh%2BU3FTsIogt6hHznNmvW6jnVf4PWYm2LAOYgX9oOUGMuejyercZcQxKAYvuJNk9pAj2N%2F29A47dNA1JM1Esn07fSQK%2BrjykhrqAbb4B2BVLMuqVvP9o1728bmb1LYoeTSXU6BpP9LzGWGMXHnNEyuMgIXbuJn9hdoBEqrqo%2BwOQvB3DvPDpptF%2Fcyu%2FlMiq587eeWBC9lpWRA2lbok6j3k8PwT%2BYUw7N2gxQY6mwFUiaWnwqyhbkklWwsQtqt4W%2FREYwBiJpoHFTI0ssbUMYi2yPXAhO2g6A7ImDcldPnU0H608uVoUcZ5N2cA2teB9isUKQ6KZh%2BAmkE1jgCC2flkfDrks7oyPtxXHG6nHkgsz2iLgWmO0qdqwOnHH2AofwHMWZ51VPqOI5NfDWna%2Fu6q%2FQsWCxDURazVVu6c64o5Gl5b0%2FDJuvDp5A%3D%3D&Expires=1755854876
+[2] selected_image_6340636405333947802.jpg https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/images/12938409/4314308e-9c48-4fe1-b02e-cb417523c857/selected_image_6340636405333947802.jpg?AWSAccessKeyId=ASIA2F3EMEYEW6LQCDKD&Signature=i4kXgY9R78RBGsjI4ZOxPTzArvY%3D&x-amz-security-token=IQoJb3JpZ2luX2VjELn%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJGMEQCIFa7iKil6D%2FYq0Swk%2FqAI9dVea8R%2BApw78F3MRCioEO4AiBnksKRcey4lKbPbBFP8Cb9S40g68XdiV4qaZ4jyXEXzirxBAgSEAEaDDY5OTc1MzMwOTcwNSIMxctwhUelRKKTiTLRKs4EvLdGpzhg%2F4jbJRGuQQjyv%2FlOfp09LAVDtrURMznn7M7ri5GxZHEeap%2FtnFWKbo9ZcBk4r3txpBjcyTHv0NuoDKETG8A1kitPqDwTf0po%2FnL2woKbnznUpZJnIiXlntZOC3D3pWjzUrwxj454eN0eO3fOyWRsWUguj6IEkJiXj3KZHBRrQfh1NUySzDLxaPNjWLBhlrL5T%2Fdwa4sMxMd8tWq6DRPDmsYtbZm%2B2OPUpbw%2BLh%2BJ7C9zwGQz963Z%2FDfekRPl1otCo0%2FEeXEO1z3V72o5byL2unTyYqgTyG%2Flao3uG3%2FeWxLsRSS5fKVamn1Lr6QYrpyDYCN%2FNxRu%2BKZy%2F5mCt%2FhsaH%2BV0Utu3t3d7se6QRUwy3GvDTy%2B1Oi%2BkRSPEZPSpuCnRpzDVrqs5uzSq4G%2B%2BcEnfw17IGgthBnMIi3RmQvD%2FtfL34xhHnqiVCkXLbPieTIDu%2F%2BMUruUZ71mz3Hn4CbRLotyh2cCnhamP2lKkf68pv5MeSwt%2F2t5%2FW%2BIKJq%2BVXyXcvAutu56pHVfxWEujx1%2ByHiBVXDqPjQtr2sJ0nPZgxiDDuh%2BU3FTsIogt6hHznNmvW6jnVf4PWYm2LAOYgX9oOUGMuejyercZcQxKAYvuJNk9pAj2N%2F29A47dNA1JM1Esn07fSQK%2BrjykhrqAbb4B2BVLMuqVvP9o1728bmb1LYoeTSXU6BpP9LzGWGMXHnNEyuMgIXbuJn9hdoBEqrqo%2BwOQvB3DvPDpptF%2Fcyu%2FlMiq587eeWBC9lpWRA2lbok6j3k8PwT%2BYUw7N2gxQY6mwFUiaWnwqyhbkklWwsQtqt4W%2FREYwBiJpoHFTI0ssbUMYi2yPXAhO2g6A7ImDcldPnU0H608uVoUcZ5N2cA2teB9isUKQ6KZh%2BAmkE1jgCC2flkfDrks7oyPtxXHG6nHkgsz2iLgWmO0qdqwOnHH2AofwHMWZ51VPqOI5NfDWna%2Fu6q%2FQsWCxDURazVVu6c64o5Gl5b0%2FDJuvDp5A%3D%3D&Expires=1755854876
+[3] selected_image_2220507730995931078.jpg https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/images/12938409/56981fcb-b9f6-4d14-bd0c-d6622d8cc740/selected_image_2220507730995931078.jpg?AWSAccessKeyId=ASIA2F3EMEYEW6LQCDKD&Signature=AhH%2BuwJ%2BdL6sdzNdVyjZ5BePQDE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjELn%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJGMEQCIFa7iKil6D%2FYq0Swk%2FqAI9dVea8R%2BApw78F3MRCioEO4AiBnksKRcey4lKbPbBFP8Cb9S40g68XdiV4qaZ4jyXEXzirxBAgSEAEaDDY5OTc1MzMwOTcwNSIMxctwhUelRKKTiTLRKs4EvLdGpzhg%2F4jbJRGuQQjyv%2FlOfp09LAVDtrURMznn7M7ri5GxZHEeap%2FtnFWKbo9ZcBk4r3txpBjcyTHv0NuoDKETG8A1kitPqDwTf0po%2FnL2woKbnznUpZJnIiXlntZOC3D3pWjzUrwxj454eN0eO3fOyWRsWUguj6IEkJiXj3KZHBRrQfh1NUySzDLxaPNjWLBhlrL5T%2Fdwa4sMxMd8tWq6DRPDmsYtbZm%2B2OPUpbw%2BLh%2BJ7C9zwGQz963Z%2FDfekRPl1otCo0%2FEeXEO1z3V72o5byL2unTyYqgTyG%2Flao3uG3%2FeWxLsRSS5fKVamn1Lr6QYrpyDYCN%2FNxRu%2BKZy%2F5mCt%2FhsaH%2BV0Utu3t3d7se6QRUwy3GvDTy%2B1Oi%2BkRSPEZPSpuCnRpzDVrqs5uzSq4G%2B%2BcEnfw17IGgthBnMIi3RmQvD%2FtfL34xhHnqiVCkXLbPieTIDu%2F%2BMUruUZ71mz3Hn4CbRLotyh2cCnhamP2lKkf68pv5MeSwt%2F2t5%2FW%2BIKJq%2BVXyXcvAutu56pHVfxWEujx1%2ByHiBVXDqPjQtr2sJ0nPZgxiDDuh%2BU3FTsIogt6hHznNmvW6jnVf4PWYm2LAOYgX9oOUGMuejyercZcQxKAYvuJNk9pAj2N%2F29A47dNA1JM1Esn07fSQK%2BrjykhrqAbb4B2BVLMuqVvP9o1728bmb1LYoeTSXU6BpP9LzGWGMXHnNEyuMgIXbuJn9hdoBEqrqo%2BwOQvB3DvPDpptF%2Fcyu%2FlMiq587eeWBC9lpWRA2lbok6j3k8PwT%2BYUw7N2gxQY6mwFUiaWnwqyhbkklWwsQtqt4W%2FREYwBiJpoHFTI0ssbUMYi2yPXAhO2g6A7ImDcldPnU0H608uVoUcZ5N2cA2teB9isUKQ6KZh%2BAmkE1jgCC2flkfDrks7oyPtxXHG6nHkgsz2iLgWmO0qdqwOnHH2AofwHMWZ51VPqOI5NfDWna%2Fu6q%2FQsWCxDURazVVu6c64o5Gl5b0%2FDJuvDp5A%3D%3D&Expires=1755854876
+[4] selected_image_4885260687723337973.jpg https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/images/12938409/6061266a-11f7-4c7d-b26f-19807665feb4/selected_image_4885260687723337973.jpg?AWSAccessKeyId=ASIA2F3EMEYEW6LQCDKD&Signature=6rGxCJbCOOHyvts5bpR0tyOqodM%3D&x-amz-security-token=IQoJb3JpZ2luX2VjELn%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJGMEQCIFa7iKil6D%2FYq0Swk%2FqAI9dVea8R%2BApw78F3MRCioEO4AiBnksKRcey4lKbPbBFP8Cb9S40g68XdiV4qaZ4jyXEXzirxBAgSEAEaDDY5OTc1MzMwOTcwNSIMxctwhUelRKKTiTLRKs4EvLdGpzhg%2F4jbJRGuQQjyv%2FlOfp09LAVDtrURMznn7M7ri5GxZHEeap%2FtnFWKbo9ZcBk4r3txpBjcyTHv0NuoDKETG8A1kitPqDwTf0po%2FnL2woKbnznUpZJnIiXlntZOC3D3pWjzUrwxj454eN0eO3fOyWRsWUguj6IEkJiXj3KZHBRrQfh1NUySzDLxaPNjWLBhlrL5T%2Fdwa4sMxMd8tWq6DRPDmsYtbZm%2B2OPUpbw%2BLh%2BJ7C9zwGQz963Z%2FDfekRPl1otCo0%2FEeXEO1z3V72o5byL2unTyYqgTyG%2Flao3uG3%2FeWxLsRSS5fKVamn1Lr6QYrpyDYCN%2FNxRu%2BKZy%2F5mCt%2FhsaH%2BV0Utu3t3d7se6QRUwy3GvDTy%2B1Oi%2BkRSPEZPSpuCnRpzDVrqs5uzSq4G%2B%2BcEnfw17IGgthBnMIi3RmQvD%2FtfL34xhHnqiVCkXLbPieTIDu%2F%2BMUruUZ71mz3Hn4CbRLotyh2cCnhamP2lKkf68pv5MeSwt%2F2t5%2FW%2BIKJq%2BVXyXcvAutu56pHVfxWEujx1%2ByHiBVXDqPjQtr2sJ0nPZgxiDDuh%2BU3FTsIogt6hHznNmvW6jnVf4PWYm2LAOYgX9oOUGMuejyercZcQxKAYvuJNk9pAj2N%2F29A47dNA1JM1Esn07fSQK%2BrjykhrqAbb4B2BVLMuqVvP9o1728bmb1LYoeTSXU6BpP9LzGWGMXHnNEyuMgIXbuJn9hdoBEqrqo%2BwOQvB3DvPDpptF%2Fcyu%2FlMiq587eeWBC9lpWRA2lbok6j3k8PwT%2BYUw7N2gxQY6mwFUiaWnwqyhbkklWwsQtqt4W%2FREYwBiJpoHFTI0ssbUMYi2yPXAhO2g6A7ImDcldPnU0H608uVoUcZ5N2cA2teB9isUKQ6KZh%2BAmkE1jgCC2flkfDrks7oyPtxXHG6nHkgsz2iLgWmO0qdqwOnHH2AofwHMWZ51VPqOI5NfDWna%2Fu6q%2FQsWCxDURazVVu6c64o5Gl5b0%2FDJuvDp5A%3D%3D&Expires=1755854876
+
+
+
