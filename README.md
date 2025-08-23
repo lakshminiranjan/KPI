@@ -496,6 +496,7 @@ Citations:
 
 <asp:Button ID="btnExport" runat="server" Text="Export to Excel" OnClick="btnExport_Click" CssClass="btn-add" />
 
+
 [8/22/2025 12:58 PM] Dangerous: // Client-Side CSV Export Function
  function exportTableToCSV(filename) {
      var csv = [];
@@ -563,3 +564,43 @@ Citations:
 <!-- Export Button -->
 <button type="button" id="btnExportCSV" onclick="exportTableToCSV('KPIs_<%= DateTime.Now.ToString("yyyyMMdd_HHmmss") %>.csv')" class="btn-add" style="margin-right: 10px;">Export to CSV</button>
         </div>
+
+
+
+
+
+        Protected Sub btnExport_Click(sender As Object, e As EventArgs)
+    Try
+        ' Get data from your GridView’s DataSource
+        Dim dt As New DataTable()
+        Using conn As New SqlConnection(ConfigurationManager.ConnectionStrings("MyDatabase").ConnectionString)
+            Using cmd As New SqlCommand(SqlDataSource1.SelectCommand, conn)
+                For Each p As Parameter In SqlDataSource1.SelectParameters
+                    cmd.Parameters.AddWithValue("@" & p.Name, p.DefaultValue)
+                Next
+                Using da As New SqlDataAdapter(cmd)
+                    da.Fill(dt)
+                End Using
+            End Using
+        End Using
+
+        ' Build Excel file in memory
+        Using wb As New XLWorkbook()
+            wb.Worksheets.Add(dt, "KPIs")
+
+            Using ms As New MemoryStream()
+                wb.SaveAs(ms)
+                Response.Clear()
+                Response.Buffer = True
+                Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                Response.AddHeader("content-disposition", "attachment;filename=KPIs.xlsx")
+                Response.BinaryWrite(ms.ToArray())
+                Response.Flush()
+                Response.End()
+            End Using
+        End Using
+
+    Catch ex As Exception
+        System.Diagnostics.Debug.WriteLine("Export Error: " & ex.Message)
+    End Try
+End Sub
