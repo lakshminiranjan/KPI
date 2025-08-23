@@ -604,3 +604,50 @@ Citations:
         System.Diagnostics.Debug.WriteLine("Export Error: " & ex.Message)
     End Try
 End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+##Working code in xls:
+<asp:Button ID="btnExport" runat="server" Text="Export to Excel" OnClick="btnExport_Click" />
+
+
+
+
+
+##vb code
+
+Protected Sub btnExport_Click(sender As Object, e As EventArgs) Handles btnExport.Click
+    Response.Clear()
+    Response.Buffer = True
+    Response.AddHeader("content-disposition", "attachment;filename=Export.xls")
+    Response.Charset = ""
+    Response.ContentType = "application/vnd.ms-excel"
+    Using sw As New StringWriter()
+        Dim hw As New HtmlTextWriter(sw)
+
+        GridView1.AllowPaging = False
+        GridView1.DataBind()
+
+        GridView1.RenderControl(hw)
+        Response.Output.Write(sw.ToString())
+        Response.Flush()
+        Response.End()
+    End Using
+End Sub
+
+' Required override:
+Public Overrides Sub VerifyRenderingInServerForm(control As Control)
+    ' Verifies that the control is rendered properly
+End Sub
+
+
