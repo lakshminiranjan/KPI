@@ -1,5 +1,4 @@
-﻿
-<%@ Page Title="KPI Management" Language="VB" MasterPageFile="~/Site.Master" AutoEventWireup="false" CodeBehind="Default.aspx.vb" Inherits="KPILibrary._Default" %>
+﻿<%@ Page Title="KPI Management" Language="VB" MasterPageFile="~/Site.Master" AutoEventWireup="false" CodeBehind="Default.aspx.vb" Inherits="KPILibrary._Default" %>
 <%@ Import Namespace="System.Web.Services" %>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
@@ -238,20 +237,20 @@
             }
             if (!lblKPIError) {
                 lblKPIError = document.getElementById('<%=txtKPIID.ClientID%>');
-        if (!lblKPIError) {
-            lblKPIError = document.getElementById('dynamicKPIError') || createKPIErrorLabel();
-        }
-    }
+                if (!lblKPIError) {
+                    lblKPIError = document.getElementById('dynamicKPIError') || createKPIErrorLabel();
+                }
+            }
 
-    if (!inputField || !lblKPIError) {
-        console.error("Input field or error label not found during submission");
-        return true; // Let it pass instead of blocking
-    }
+            if (!inputField || !lblKPIError) {
+                console.error("Input field or error label not found during submission");
+                return true; // Let it pass instead of blocking
+            }
 
-    var kpiID = inputField.value.trim().replace(/\s{2,}/g, ' ');
-    inputField.value = kpiID;
+            var kpiID = inputField.value.trim().replace(/\s{2,}/g, ' ');
+            inputField.value = kpiID;
 
-    var isEdit = document.getElementById('<%=hfIsEdit.ClientID%>');
+            var isEdit = document.getElementById('<%=txtKPIID.ClientID%>');
             var originalKPIID = document.getElementById('<%=hfKPIID.ClientID%>');
             if (isEdit && originalKPIID && isEdit.value === "true" && kpiID === originalKPIID.value) {
                 hideElement(lblKPIError);
@@ -315,7 +314,7 @@
                 hideElement(lblKPIError);
             }
 
-            var submitButton = document.getElementById('<%=btnSubmit.ClientID%>');
+            var submitButton = document.getElementById('<%=hfIsEdit.ClientID%>');
             if (submitButton) {
                 $(submitButton).off('click.kpivalidation').on('click.kpivalidation', function (e) {
                     if (!validateBeforeSubmit()) {
@@ -329,7 +328,7 @@
 
         function showKPIError(message) {
             if (!lblKPIError) {
-                lblKPIError = document.getElementById('<%=lblKPIError.ClientID%>');
+                lblKPIError = document.getElementById('<%=hfKPIID.ClientID%>');
                 if (!lblKPIError) {
                     lblKPIError = document.getElementById('dynamicKPIError') || createKPIErrorLabel();
                 }
@@ -352,115 +351,121 @@
             }
         }
 
-        
-  var ORDER_LABEL_ID = '<%= lblOrderError.ClientID %>';
-  var ORDER_INPUT_ID = '<%= txtOrder.ClientID %>';
-  var METRIC_INPUT_ID = '<%= txtMetric.ClientID %>';
-  var KPIID_INPUT_ID  = '<%= txtKPIID.ClientID %>';
 
-  function showFieldError(labelClientId, inputClientId, message) {
-    var lbl = document.getElementById(labelClientId);
-    var inp = document.getElementById(inputClientId);
+        var ORDER_LABEL_ID = '<%= lblOrderError.ClientID %>';
+        var ORDER_INPUT_ID = '<%= txtOrder.ClientID %>';
+        var METRIC_INPUT_ID = '<%= txtMetric.ClientID %>';
+        var KPIID_INPUT_ID = '<%= txtKPIID.ClientID %>';
 
-    if (lbl) {
-      lbl.innerText = message || '';
-      lbl.style.display = message ? 'block' : 'none';
-    }
-    if (inp) {
-      if (message) {
-        inp.classList.add('field-invalid');
-        if (document.activeElement !== inp) {
-          try { inp.focus(); } catch(e) {}
+
+
+        function showFieldError(labelClientId, inputClientId, message) {
+            var lbl = document.getElementById(labelClientId);
+            var inp = document.getElementById(inputClientId);
+
+            if (lbl) {
+                lbl.innerText = message || '';
+                lbl.style.display = message ? 'block' : 'none';
+            }
+            if (inp) {
+                if (message) {
+                    inp.classList.add('field-invalid');
+                    if (document.activeElement !== inp) {
+                        try { inp.focus(); } catch (e) { }
+                    }
+                    inp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    inp.classList.remove('field-invalid');
+                }
+            }
         }
-        inp.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      } else {
-        inp.classList.remove('field-invalid');
-      }
-    }
-  }
 
-  function validateOrderDynamic() {
-    var orderEl  = document.getElementById(ORDER_INPUT_ID);
-    var metricEl = document.getElementById(METRIC_INPUT_ID);
-    var kpiIdEl  = document.getElementById(KPIID_INPUT_ID);
-
-    var orderVal  = orderEl ? orderEl.value.trim() : '';
-    var metricVal = metricEl ? metricEl.value.trim() : '';
-    var kpiIdVal  = kpiIdEl ? kpiIdEl.value.trim() : '';
-
-    if (!/^\d+$/.test(orderVal)) {
-        showFieldError(ORDER_LABEL_ID, ORDER_INPUT_ID, 'Order number must be between 1 and 999, using only numerical digits.');
-      return;
-    }
-
-    var n = parseInt(orderVal, 10);
-    if (n < 1 || n > 999) {
-      showFieldError(ORDER_LABEL_ID, ORDER_INPUT_ID, 'Order must be between 1 and 999.');
-      return;
-    }
-
-    if (!metricVal) {
-      showFieldError(ORDER_LABEL_ID, ORDER_INPUT_ID, '');
-      return;
-    }
-
-    var payload = JSON.stringify({
-      metric: metricVal,
-      orderWithinSecton: n,
-      originalKpiId: kpiIdVal
-    });
-
-    fetch('<%= ResolveUrl("Default.aspx/ValidateOrder") %>', {
-                method: 'POST',
-            headers: {'Content-Type': 'application/json; charset=utf-8' },
-            body: payload,
-            credentials: 'same-origin'
-    })
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
-      var result = (data && data.d) ? data.d : {isValid: true, message: '' };
-            if (!result.isValid) {
-                showFieldError(ORDER_LABEL_ID, ORDER_INPUT_ID, result.message || 'Invalid order.');
-      } else {
-                showFieldError(ORDER_LABEL_ID, ORDER_INPUT_ID, '');
-      }
-    })
-            .catch(function() {
-                showFieldError(ORDER_LABEL_ID, ORDER_INPUT_ID, '');
-    });
-  }
-
-            document.addEventListener('DOMContentLoaded', function () {
-    var orderEl  = document.getElementById(ORDER_INPUT_ID);
+        function validateOrderDynamic() {
+            var orderEl = document.getElementById(ORDER_INPUT_ID);
             var metricEl = document.getElementById(METRIC_INPUT_ID);
-            var kpiIdEl  = document.getElementById(KPIID_INPUT_ID);
+            var kpiIdEl = document.getElementById(KPIID_INPUT_ID);
+
+            var orderVal = orderEl ? orderEl.value.trim() : '';
+            var metricVal = metricEl ? metricEl.value.trim() : '';
+            var kpiIdVal = kpiIdEl ? kpiIdVal.value.trim() : '';
+
+            if (!/^\d+$/.test(orderVal)) {
+                showFieldError(ORDER_LABEL_ID, ORDER_INPUT_ID, 'Order number must be between 1 and 999, using only numerical digits.');
+                return;
+            }
+
+            var n = parseInt(orderVal, 10);
+            if (n < 1 || n > 999) {
+                showFieldError(ORDER_LABEL_ID, ORDER_INPUT_ID, 'Order must be between 1 and 999.');
+                return;
+            }
+
+            if (!metricVal) {
+                showFieldError(ORDER_LABEL_ID, ORDER_INPUT_ID, '');
+                return;
+            }
+
+            var payload = JSON.stringify({
+                metric: metricVal,
+                orderWithinSecton: n,
+                originalKpiId: kpiIdVal
+            });
+
+            fetch('<%= ResolveUrl("Default.aspx/ValidateOrder") %>', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json; charset=utf-8' },
+                body: payload,
+                credentials: 'same-origin'
+            })
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    var result = (data && data.d) ? data.d : { isValid: true, message: '' };
+                    if (!result.isValid) {
+                        showFieldError(ORDER_LABEL_ID, ORDER_INPUT_ID, result.message || 'Invalid order.');
+                    } else {
+                        showFieldError(ORDER_LABEL_ID, ORDER_INPUT_ID, '');
+                    }
+                })
+                .catch(function () {
+                    showFieldError(ORDER_LABEL_ID, ORDER_INPUT_ID, '');
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var orderEl = document.getElementById(ORDER_INPUT_ID);
+            var metricEl = document.getElementById(METRIC_INPUT_ID);
+            var kpiIdEl = document.getElementById(KPIID_INPUT_ID);
 
             if (orderEl) {
                 orderEl.addEventListener('blur', validateOrderDynamic);
-            orderEl.addEventListener('change', validateOrderDynamic);
-            orderEl.addEventListener('keyup', function(e) {
-        if (e.key === 'Enter') return;
-            clearTimeout(orderEl.__t);
-            orderEl.__t = setTimeout(validateOrderDynamic, 300);
-      });
-    }
+                orderEl.addEventListener('change', validateOrderDynamic);
+                orderEl.addEventListener('keyup', function (e) {
+                    if (e.key === 'Enter') return;
+                    clearTimeout(orderEl.__t);
+                    orderEl.__t = setTimeout(validateOrderDynamic, 300);
+                });
+            }
             if (metricEl) {
                 metricEl.addEventListener('blur', validateOrderDynamic);
-            metricEl.addEventListener('change', validateOrderDynamic);
-    }
+                metricEl.addEventListener('change', validateOrderDynamic);
+            }
             if (kpiIdEl) {
                 kpiIdEl.addEventListener('blur', validateOrderDynamic);
-            kpiIdEl.addEventListener('change', validateOrderDynamic);
-    }
-  });
+                kpiIdEl.addEventListener('change', validateOrderDynamic);
+            }
+        });
+
+
+
+
+    </script>
     
 
 
-        
-    </script>
-
     <asp:Button ID="btnLogout" runat="server" Text="Logout" CssClass="btn-edit" OnClick="btnLogout_Click" Style="float:right; margin:10px;" />
 
+
+   
     <div id="kpiModal" class="modal">
         <span class="close-btn" onclick="hidePopup()">×</span>
         <h3><asp:Label ID="lblFormTitle" runat="server" Text="Add KPI" /></h3>
@@ -565,7 +570,8 @@
         <asp:CheckBox ID="chkShowActive" runat="server" AutoPostBack="true" OnCheckedChanged="chkShowActive_CheckedChanged" />
         <span class="slider"></span>
     </label>
-    
+    <asp:Button ID="btnExport" runat="server" Text="Export to Excel" OnClick="btnExport_Click" />
+
 </div>
 
     <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" DataSourceID="SqlDataSource1" CssClass="grid-style" OnRowCommand="GridView1_RowCommand"

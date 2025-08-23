@@ -4,6 +4,13 @@ Imports System.Security.Permissions
 Imports System.Text.RegularExpressions
 Imports System.Web.Script.Services
 Imports System.Web.Services
+Imports System.IO
+Imports ClosedXML.Excel
+Imports OfficeOpenXml
+Imports OfficeOpenXml.Style
+Imports System.Data
+Imports System.Drawing
+
 
 <ScriptService()>
 Partial Public Class _Default
@@ -487,4 +494,29 @@ Partial Public Class _Default
     End Function
 
     'new chnages
+    Protected Sub btnExport_Click(sender As Object, e As EventArgs) Handles btnExport.Click
+        Response.Clear()
+        Response.Buffer = True
+        Response.AddHeader("content-disposition", "attachment;filename=Export.xls")
+        Response.Charset = ""
+        Response.ContentType = "application/vnd.ms-excel"
+        Using sw As New StringWriter()
+            Dim hw As New HtmlTextWriter(sw)
+
+            GridView1.AllowPaging = False
+            GridView1.DataBind()
+
+            GridView1.RenderControl(hw)
+            Response.Output.Write(sw.ToString())
+            Response.Flush()
+            Response.End()
+        End Using
+    End Sub
+
+    ' Required override:
+    Public Overrides Sub VerifyRenderingInServerForm(control As Control)
+        ' Verifies that the control is rendered properly
+    End Sub
+
+
 End Class
