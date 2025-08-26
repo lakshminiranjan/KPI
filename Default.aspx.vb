@@ -495,6 +495,14 @@ Partial Public Class _Default
 
     'new chnages
     Protected Sub btnExport_Click(sender As Object, e As EventArgs) Handles btnExport.Click
+
+        ' Store original visibility and text
+        Dim firstColumnVisible As Boolean = GridView1.Columns(0).Visible
+        Dim originalSortIndicators As New List(Of String)
+
+        ' Temporarily hide first column
+        GridView1.Columns(0).Visible = False
+
         Response.Clear()
         Response.Buffer = True
         Response.AddHeader("content-disposition", "attachment;filename=Export.xls")
