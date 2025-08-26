@@ -651,3 +651,169 @@ Public Overrides Sub VerifyRenderingInServerForm(control As Control)
 End Sub
 
 
+
+
+
+
+Here are the exact minimal code changes to add Export to XLS and Clone to KPI 4.0. Copy-paste only the shown edits.
+
+ASPX changes
+
+1) Add Clone button next to Edit inside the first TemplateField’s ItemTemplate.
+Replace the existing ItemTemplate with this:
+
+<ItemTemplate>
+    <asp:Button ID="btnEdit" runat="server" Text="Edit"
+        CommandName="EditKPI"
+        CommandArgument='<%# Container.DataItemIndex %>'
+        CssClass="btn-edit" />
+    <asp:Button ID="btnClone" runat="server" Text="Clone"
+        CommandName="CloneKPI"
+        CommandArgument='<%# Container.DataItemIndex %>'
+        CssClass="btn-add" Style="margin-left:6px;" />
+</ItemTemplate>
+
+[1][2]
+
+2) Export button already exists in your page:
+<asp:Button ID="btnExport" runat="server" Text="Export to Excel" OnClick="btnExport_Click" />
+No change needed here. The handler will be updated below.[3]
+
+VB code-behind changes
+
+1) Replace btnExport_Click with a state-safe exporter that hides the action column and restores the grid afterward.
+
+Protected Sub btnExport_Click(sender As Object, e As EventArgs) Handles btnExport.Click
+    Dim origCol0Visible As Boolean = GridView1.Columns(0).Visible
+    Dim origAllowPaging As Boolean = GridView1.AllowPaging
+    Try
+        ' Hide first column (Edit/Clone) for clean export
+        GridView1.Columns(0).Visible = False
+
+        ' Export all rows
+        GridView1.AllowPaging = False
+        GridView1.DataBind()
+
+        Response.Clear()
+        Response.Buffer = True
+        Response.AddHeader("content-disposition", "attachment;filename=KPI_Library_Export.xls")
+        Response.Charset = ""
+        Response.ContentType = "application/vnd.ms-excel"
+
+        Using sw As New StringWriter()
+            Using hw As New HtmlTextWriter(sw)
+                GridView1.RenderControl(hw)
+                Response.Output.Write(sw.ToString())
+                Response.Flush()
+                Response.End()
+            End Using
+        End Using
+    Finally
+        ' Restore grid state
+        GridView1.Columns(0).Visible = origCol0Visible
+        GridView1.AllowPaging = origAllowPaging
+        GridView1.DataBind()
+    End Try
+End Sub
+
+' Required for export
+Public Overrides Sub VerifyRenderingInServerForm(control As Control)
+    ' Intentionally empty
+End Sub
+
+[4][3]
+
+2) Extend existing RowCommand to handle CloneKPI.
+
+Protected Sub GridView1_RowCommand(sender As Object, e As GridViewCommandEventArgs)
+    If e.CommandName = "EditKPI" Then
+        Dim index As Integer = Convert.ToInt32(e.CommandArgument)
+        LoadEditData(index)
+    ElseIf e.CommandName = "CustomSort" Then
+        Dim args = e.CommandArgument.ToString().Split("|"c)
+        If args.Length = 2 Then
+            SortColumn = args(0)
+            SortDirection = args(1)
+            SqlDataSource1.SelectParameters("SortColumn").DefaultValue = SortColumn
+            SqlDataSource1.SelectParameters("SortDirection").DefaultValue = SortDirection
+            GridView1.DataBind()
+        End If
+    ElseIf e.CommandName = "CloneKPI" Then
+        Dim index As Integer = Convert.ToInt32(e.CommandArgument)
+        CloneKPI(index)
+    End If
+End Sub
+
+[2][1]
+
+3) Add CloneKPI method (copy values, reset ID and Order, show modal).
+
+Private Sub CloneKPI(rowIndex As Integer)
+    Dim sourceKpiId As String = GridView1.DataKeys(rowIndex).Value.ToString()
+
+    Using conn As New SqlConnection(ConfigurationManager.ConnectionStrings("MyDatabase").ConnectionString)
+        conn.Open()
+        Using cmd As New SqlCommand("SELECT * FROM KPITable WHERE [KPI ID] = @KPI_ID", conn)
+            cmd.Parameters.AddWithValue("@KPI_ID", sourceKpiId)
+            Using reader As SqlDataReader = cmd.ExecuteReader()
+                If reader.Read() Then
+                    txtMetric.Text = reader("KPI or Standalone Metric").ToString()
+                    txtKPIName.Text = reader("KPI Name").ToString()
+                    txtShortDesc.Text = reader("KPI Short Description").ToString()
+                    txtImpact.Text = reader("KPI Impact").ToString()
+                    txtNumerator.Text = reader("Numerator Description").ToString()
+                    txtDenom.Text = reader("Denominator Description").ToString()
+                    txtUnit.Text = reader("Unit").ToString()
+                    txtDatasource.Text = reader("Datasource").ToString()
+                    txtSection.Text = reader("KPI_Section").ToString()
+
+                    chkActive.Checked = reader("Active").ToString().ToUpper() = "Y"
+                    chkFlagDivisinal.Checked = reader("FLAG_DIVISINAL").ToString().ToUpper() = "Y"
+                    chkFlagVendor.Checked = reader("FLAG_VENDOR").ToString().ToUpper() = "Y"
+                    chkFlagEngagement.Checked = reader("FLAG_ENGAGEMENTID").ToString().ToUpper() = "Y"
+                    chkFlagContract.Checked = reader("FLAG_CONTRACTID").ToString().ToUpper() = "Y"
+                    chkFlagCostcentre.Checked = reader("FLAG_COSTCENTRE").ToString().ToUpper() = "Y"
+                    chkFlagDeuballvl4.Checked = reader("FLAG_DEUBALvl4").ToString().ToUpper() = "Y"
+                    chkFlagHRID.Checked = reader("FLAG_HRID").ToString().ToUpper() = "Y"
+                    chkFlagRequest.Checked = reader("FLAG_REQUESTID").ToString().ToUpper() = "Y"
+                End If
+            End Using
+        End Using
+    End Using
+
+    ' New record semantics for clone
+    hfIsEdit.Value = "false"
+    hfKPIID.Value = ""
+    txtKPIID.Text = ""      ' Force new unique KPI ID
+    txtKPIID.Enabled = True
+    txtOrder.Text = ""      ' Let existing validation enforce uniqueness 1..999
+
+    ' Clear errors and show modal
+    lblKPIError.Visible = False
+    lblOrderError.Text = ""
+    lblOrderError.Style("display") = "none"
+    lblDuplicateMetricKPIError.Visible = False
+
+    lblFormTitle.Text = "Clone KPI"
+    ScriptManager.RegisterStartupScript(Me, Me.GetType(), "ShowClone_" & Guid.NewGuid().ToString(), "showPopup(); hideKPIError();", True)
+End Sub
+
+[1][2]
+
+That’s all. No changes to SqlDataSource1, stored procedures, or validation logic. Export uses the standard HTML-to-Excel approach; Clone uses GridView RowCommand with CommandName and CommandArgument, as per WebForms guidance.[2][3][1]
+
+[1](https://learn.microsoft.com/en-us/dotnet/api/system.web.ui.webcontrols.gridview.rowcommand?view=netframework-4.8.1)
+[2](https://learn.microsoft.com/en-us/aspnet/web-forms/overview/data-access/custom-button-actions/adding-and-responding-to-buttons-to-a-gridview-vb)
+[3](https://www.c-sharpcorner.com/UploadFile/0c1bb2/export-gridview-to-excel/)
+[4](https://stackoverflow.com/questions/38788810/asp-net-proper-way-of-exporting-gridview-to-excel-including-dynamically-added-r)
+[5](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/12938409/f8ead901-72e1-4f79-914a-d919dbb3646f/paste.txt)
+[6](https://stackoverflow.com/questions/4737472/dynamically-adding-a-command-button-to-a-gridview)
+[7](https://www.youtube.com/watch?v=EHm9Jlchi4g)
+[8](https://www.aspsnippets.com/questions/193693/Update-Edited-ASPNet-GridView-rows-on-Button-Click-using-C-and-VBNet/)
+[9](https://www.youtube.com/watch?v=3KXQ1lbS2x4)
+[10](https://www.c-sharpcorner.com/article/crud-using-stored-procedure-in-asp-net-gridview-real-time/)
+[11](https://www.aspsnippets.com/questions/670601/Using-RowCommand-event-with-ASPNet-GridView-inside-UpdatePanel-in-C-and-VBNet/)
+[12](https://www.gemboxsoftware.com/spreadsheet/examples/asp-net-excel-export-gridview/5101)
+
+
+
