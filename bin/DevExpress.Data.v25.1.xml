@@ -4612,6 +4612,31 @@
       </summary>
       <param name="theOperator">A <see cref="T:DevExpress.Data.Filtering.UnaryOperator"/> object.</param>
     </member>
+    <member name="T:DevExpress.Data.Filtering.Helpers.GroupType">
+      <summary>
+        <para>Lists logical operators.</para>
+      </summary>
+    </member>
+    <member name="F:DevExpress.Data.Filtering.Helpers.GroupType.And">
+      <summary>
+        <para>Returns true if both operands are true.</para>
+      </summary>
+    </member>
+    <member name="F:DevExpress.Data.Filtering.Helpers.GroupType.NotAnd">
+      <summary>
+        <para>Equals NOT applied to the result of an AND operation.</para>
+      </summary>
+    </member>
+    <member name="F:DevExpress.Data.Filtering.Helpers.GroupType.NotOr">
+      <summary>
+        <para>Equals NOT applied to the result of an OR operation.</para>
+      </summary>
+    </member>
+    <member name="F:DevExpress.Data.Filtering.Helpers.GroupType.Or">
+      <summary>
+        <para>Returns true if at least one operand is true.</para>
+      </summary>
+    </member>
     <member name="T:DevExpress.Data.Filtering.IClientCriteriaVisitor">
       <summary>
         <para>For internal use only.</para>
@@ -20169,10 +20194,10 @@
       <summary>
         <para>Initializes a new instance of the <see cref="T:DevExpress.XtraPrinting.PaddingInfo"/> class with the specified left, right, top and bottom values, and the dpi of the specified graphics unit.</para>
       </summary>
-      <param name="left">An integer value that specifies the left value of the padding. This value is assigned to the <see cref="P:DevExpress.XtraPrinting.PaddingInfo.Left">PaddingInfo.Left</see> property.</param>
-      <param name="right">An integer value that specifies the right value of the padding. This value is assigned to the <see cref="P:DevExpress.XtraPrinting.PaddingInfo.Right">PaddingInfo.Right</see> property.</param>
-      <param name="top">An integer value that specifies the top value of the padding. This value is assigned to the <see cref="P:DevExpress.XtraPrinting.PaddingInfo.Top">PaddingInfo.Top</see> property.</param>
-      <param name="bottom">An integer value that specifies the bottom value of the padding. This value is assigned to the <see cref="P:DevExpress.XtraPrinting.PaddingInfo.Bottom">PaddingInfo.Bottom</see> property.</param>
+      <param name="left">An integer value that specifies the left value of the padding. This value is assigned to the PaddingInfo.Left property.</param>
+      <param name="right">An integer value that specifies the right value of the padding. This value is assigned to the PaddingInfo.Right property.</param>
+      <param name="top">An integer value that specifies the top value of the padding. This value is assigned to the PaddingInfo.Top property.</param>
+      <param name="bottom">An integer value that specifies the bottom value of the padding. This value is assigned to the PaddingInfo.Bottom property.</param>
       <param name="graphicsUnit">A <see cref="T:System.Drawing.GraphicsUnit"/> value that specifies the graphics unit of the padding. The dpi value of the graphics unit is assigned to the <see cref="P:DevExpress.XtraPrinting.PaddingInfo.Dpi">PaddingInfo.Dpi</see> property.</param>
     </member>
     <member name="M:DevExpress.XtraPrinting.PaddingInfo.#ctor(System.Single,System.Single,System.Single,System.Single,System.Single)">
@@ -20203,12 +20228,6 @@
         <para>Specifies padding for all the element’s sides.</para>
       </summary>
       <value>The padding value in pixels (default) for all sides of the element.</value>
-    </member>
-    <member name="P:DevExpress.XtraPrinting.PaddingInfo.Bottom">
-      <summary>
-        <para>Gets or sets the padding value for the bottom edge.</para>
-      </summary>
-      <value>An integer value which represents the padding value (in pixels) for the bottom edge.</value>
     </member>
     <member name="P:DevExpress.XtraPrinting.PaddingInfo.BottomF">
       <summary>
@@ -20345,23 +20364,11 @@
       </summary>
       <value>true if the padding is empty; otherwise, false.</value>
     </member>
-    <member name="P:DevExpress.XtraPrinting.PaddingInfo.Left">
-      <summary>
-        <para>Gets or sets the padding value for the left edge.</para>
-      </summary>
-      <value>An integer value which represents the padding value (in pixels) for the left edge.</value>
-    </member>
     <member name="P:DevExpress.XtraPrinting.PaddingInfo.LeftF">
       <summary>
         <para>Specifies the padding value for the left edge.</para>
       </summary>
       <value>The padding value in pixels (default) for the left edge.</value>
-    </member>
-    <member name="P:DevExpress.XtraPrinting.PaddingInfo.Right">
-      <summary>
-        <para>Gets or sets the padding value for the right edge.</para>
-      </summary>
-      <value>An integer value which represents the padding value (in pixels) for the right edge.</value>
     </member>
     <member name="P:DevExpress.XtraPrinting.PaddingInfo.RightF">
       <summary>
@@ -20374,12 +20381,6 @@
         <para>Rotates padding values counterclockwise the specified number of times.</para>
       </summary>
       <param name="numberOfTimes">An integer value which specifies the number of times for padding values to rotate.</param>
-    </member>
-    <member name="P:DevExpress.XtraPrinting.PaddingInfo.Top">
-      <summary>
-        <para>Gets or sets the padding value for the top edge.</para>
-      </summary>
-      <value>An integer value which represents the padding value (in pixels) for the top edge.</value>
     </member>
     <member name="P:DevExpress.XtraPrinting.PaddingInfo.TopF">
       <summary>

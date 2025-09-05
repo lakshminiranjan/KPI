@@ -299,7 +299,7 @@ Partial Public Class _Default
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnExport As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents btnExport As Global.DevExpress.Web.ASPxButton
 
     '''<summary>
     '''GridView1 control.

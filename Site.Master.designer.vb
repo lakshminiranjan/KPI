@@ -14,13 +14,13 @@ Option Explicit On
 Partial Public Class SiteMaster
 
     '''<summary>
-    '''ScriptManager1 control.
+    '''ASPxScriptManager1 control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents ScriptManager1 As Global.System.Web.UI.ScriptManager
+    Protected WithEvents ASPxScriptManager1 As Global.DevExpress.Web.ASPxScriptManager
 
     '''<summary>
     '''MainContent control.

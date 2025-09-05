@@ -22521,6 +22521,12 @@
       </summary>
       <value>The hash algorithm to be used in a PDF document.</value>
     </member>
+    <member name="P:DevExpress.XtraPrinting.PdfSignatureOptions.ImageSource">
+      <summary>
+        <para>Gets or sets an image to display in the visual signature field of a digitally signed PDF document.</para>
+      </summary>
+      <value>An image displayed in the visual signature field.</value>
+    </member>
     <member name="P:DevExpress.XtraPrinting.PdfSignatureOptions.Location">
       <summary>
         <para>Specifies the certificate’s location.</para>

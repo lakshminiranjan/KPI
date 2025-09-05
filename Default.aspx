@@ -1,5 +1,7 @@
 ﻿<%@ Page Title="KPI Management" Language="VB" MasterPageFile="~/Site.Master" AutoEventWireup="false" CodeBehind="Default.aspx.vb" Inherits="KPILibrary._Default" %>
 <%@ Import Namespace="System.Web.Services" %>
+<%@ Register Assembly="DevExpress.Web.v25.1" Namespace="DevExpress.Web" TagPrefix="dx" %>
+
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
@@ -570,7 +572,9 @@
         <asp:CheckBox ID="chkShowActive" runat="server" AutoPostBack="true" OnCheckedChanged="chkShowActive_CheckedChanged" />
         <span class="slider"></span>
     </label>
-    <asp:Button ID="btnExport" runat="server" Text="Export to Excel" OnClick="btnExport_Click" />
+    
+            <dx:ASPxButton ID="btnExport" runat="server" Text="Export to Excel" />
+        
 
 </div>
 

@@ -6975,7 +6975,7 @@
       <summary>
         <para>Specifies an application used to modify the document.</para>
       </summary>
-      <value>The application name. The default is “DevExpress Office File API/25.1.3.0”.</value>
+      <value>The application name. The default is “DevExpress Office File API/25.1.4.0”.</value>
     </member>
     <member name="P:DevExpress.XtraRichEdit.API.Native.DocumentProperties.AppVersion">
       <summary>
@@ -12195,7 +12195,7 @@
       <summary>
         <para>Gets the name of the application used to modify the document.</para>
       </summary>
-      <value>The application’s name. The default is “DevExpress Office File API/25.1.3.0”.</value>
+      <value>The application’s name. The default is “DevExpress Office File API/25.1.4.0”.</value>
     </member>
     <member name="P:DevExpress.XtraRichEdit.API.Native.ReadOnlyDocumentBuiltInProperties.AppVersion">
       <summary>

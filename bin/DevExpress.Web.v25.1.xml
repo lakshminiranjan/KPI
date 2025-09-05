@@ -24677,12 +24677,6 @@
         <para>This property is not in effect for the <see cref="T:DevExpress.Web.ASPxTokenBox"/> class.</para>
       </summary>
     </member>
-    <member name="P:DevExpress.Web.ASPxTokenBox.AccessibilityLabelText">
-      <summary>
-        <para>Specifies the editor’s label text for a screen reader.</para>
-      </summary>
-      <value>The text.</value>
-    </member>
     <member name="P:DevExpress.Web.ASPxTokenBox.AllowCustomTokens">
       <summary>
         <para>Gets or sets whether end-users can input custom tokens.</para>
