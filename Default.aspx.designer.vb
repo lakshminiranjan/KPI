@@ -59,6 +59,15 @@ Partial Public Class _Default
     Protected WithEvents lblDuplicateMetricKPIError As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''rfvKPIName control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rfvKPIName As Global.System.Web.UI.WebControls.RequiredFieldValidator
+
+    '''<summary>
     '''txtKPIID control.
     '''</summary>
     '''<remarks>

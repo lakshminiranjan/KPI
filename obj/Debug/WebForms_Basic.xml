@@ -37,6 +37,51 @@ KPILibrary
  Returns the Asp log object.
  </summary>
 </member>
+<member name="F:KPILibrary.AdminReport._form1">
+<summary>
+form1 control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary.AdminReport._ScriptManager1">
+<summary>
+ScriptManager1 control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary.AdminReport._btnGroup">
+<summary>
+btnGroup control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary.AdminReport._gvKPI">
+<summary>
+gvKPI control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary.AdminReport._gvGroups">
+<summary>
+gvGroups control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
 <member name="F:KPILibrary._Default._btnLogout">
 <summary>
 btnLogout control.
@@ -76,6 +121,15 @@ To modify move field declaration from designer file to code-behind file.
 <member name="F:KPILibrary._Default._lblDuplicateMetricKPIError">
 <summary>
 lblDuplicateMetricKPIError control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary._Default._rfvKPIName">
+<summary>
+rfvKPIName control.
 </summary>
 <remarks>
 Auto-generated field.

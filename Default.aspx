@@ -457,6 +457,8 @@
             }
         });
 
+        
+
 
 
 
@@ -474,7 +476,15 @@
 
         <table>
             <tr><td>Metric:</td><td><asp:TextBox ID="txtMetric" runat="server" /></td></tr>
-            <tr><td>Name:</td><td><asp:TextBox ID="txtKPIName" runat="server" /><asp:Label ID="lblDuplicateMetricKPIError" runat="server"   ForeColor="Red" Style="color: red;font-size: 12px; margin-top:5px;display:block;"  /></td></tr>
+            <tr>
+  <td>Name:</td>
+  <td>
+    <asp:TextBox ID="txtKPIName" runat="server" />
+    <asp:Label ID="lblDuplicateMetricKPIError" runat="server" ForeColor="Red" Style="color:red;font-size:12px;margin-top:5px;display:block;" />
+    <asp:RequiredFieldValidator ID="rfvKPIName" runat="server" ControlToValidate="txtKPIName" ErrorMessage="KPI Name is required" ForeColor="Red" Display="Dynamic" />
+  </td>
+</tr>
+
             <tr><td>KPI ID:</td><td><asp:TextBox ID="txtKPIID" runat="server" /><asp:Label ID="lblKPIError" runat="server" CssClass="error-span" Text="KPI ID already exists" ForeColor="Red" Visible="false" /></td></tr>
             <tr><td>Short Desc:</td><td><asp:TextBox ID="txtShortDesc" runat="server" TextMode="MultiLine" Rows="3" /></td></tr>
             <tr><td>Order:</td><td><asp:TextBox ID="txtOrder" runat="server" /><asp:Label ID="lblOrderError" runat="server" CssClass="error-msg" Text=""  />
@@ -495,7 +505,7 @@
             <tr><td>FLAG_DEUBALvl4:</td><td><label class="toggle-switch"><asp:CheckBox ID="chkFlagDeuballvl4" runat="server" /><span class="slider"></span></label></td></tr>
             <tr><td>FLAG_HRID:</td><td><label class="toggle-switch"><asp:CheckBox ID="chkFlagHRID" runat="server" /><span class="slider"></span></label></td></tr>
             <tr><td>FLAG_REQUESTID:</td><td><label class="toggle-switch"><asp:CheckBox ID="chkFlagRequest" runat="server" /><span class="slider"></span></label></td></tr>
-            <tr><td colspan="2" style="text-align:center;"><asp:Button ID="btnSubmit" runat="server" Text="Submit" OnClick="btnSubmit_Click" CssClass="btn-add" /></td></tr>
+            <tr><td colspan="2" style="text-align:center;"><asp:Button ID="btnSubmit" ValidationGroup="AddEditGroup" runat="server" Text="Submit" OnClick="btnSubmit_Click" CssClass="btn-add" /></td></tr>
         </table>
         <asp:HiddenField ID="hfIsEdit" runat="server" />
         <asp:HiddenField ID="hfKPIID" runat="server" />
@@ -584,11 +594,12 @@
 
         <asp:TemplateField>
             <HeaderTemplate>
-                <asp:Button ID="btnAddKPI" runat="server" Text="+ Add KPI" CssClass="btn-add" OnClick="btnAddKPI_Click" />
+                <asp:Button ID="btnAddKPI" runat="server" Text="+ Add KPI" CssClass="btn-add" CausesValidation="False" OnClick="btnAddKPI_Click" />
             </HeaderTemplate>
             <ItemTemplate>
     <asp:Button ID="btnEdit" runat="server" Text="Edit"
         CommandName="EditKPI"
+        CausesValidation="False"
         CommandArgument='<%# Container.DataItemIndex %>'
         CssClass="btn-edit" />
   </ItemTemplate>

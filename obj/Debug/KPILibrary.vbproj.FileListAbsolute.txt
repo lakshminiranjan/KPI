@@ -1,3 +1,7 @@
+D:\Projects\KPILibrary\KPILibrary\obj\Debug\KPILibrary.vbproj.AssemblyReference.cache
+D:\Projects\KPILibrary\KPILibrary\obj\Debug\KPILibrary.Resources.resources
+D:\Projects\KPILibrary\KPILibrary\obj\Debug\KPILibrary.vbproj.GenerateResource.cache
+D:\Projects\KPILibrary\KPILibrary\obj\Debug\KPILibrary.vbproj.CoreCompileInputs.cache
 D:\Projects\KPILibrary\KPILibrary\bin\KPILibrary.dll.config
 D:\Projects\KPILibrary\KPILibrary\bin\KPILibrary.dll
 D:\Projects\KPILibrary\KPILibrary\bin\KPILibrary.pdb
@@ -132,10 +136,6 @@ D:\Projects\KPILibrary\KPILibrary\bin\Newtonsoft.Json.xml
 D:\Projects\KPILibrary\KPILibrary\bin\Antlr3.Runtime.pdb
 D:\Projects\KPILibrary\KPILibrary\bin\Microsoft.AspNet.FriendlyUrls.xml
 D:\Projects\KPILibrary\KPILibrary\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-D:\Projects\KPILibrary\KPILibrary\obj\Debug\KPILibrary.vbproj.AssemblyReference.cache
-D:\Projects\KPILibrary\KPILibrary\obj\Debug\KPILibrary.Resources.resources
-D:\Projects\KPILibrary\KPILibrary\obj\Debug\KPILibrary.vbproj.GenerateResource.cache
-D:\Projects\KPILibrary\KPILibrary\obj\Debug\KPILibrary.vbproj.CoreCompileInputs.cache
 D:\Projects\KPILibrary\KPILibrary\obj\Debug\KPILibrary.vbproj.Up2Date
 D:\Projects\KPILibrary\KPILibrary\obj\Debug\KPILibrary.dll
 D:\Projects\KPILibrary\KPILibrary\obj\Debug\WebForms_Basic.xml

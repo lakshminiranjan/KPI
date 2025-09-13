@@ -14,31 +14,27 @@ Imports DocumentFormat.OpenXml.Spreadsheet
 Partial Public Class NewReq
     Inherits System.Web.UI.Page
 
-
-
-
-
     Private ReadOnly Property ConnStr As String
         Get
             Return ConfigurationManager.ConnectionStrings("MyDatabase").ConnectionString
         End Get
     End Property
 
-    Private Property CurrentSection As String
+    Private Property CurrentKpiMetric As String
         Get
-            Dim v = TryCast(ViewState("CurrentSection"), String)
+            Dim v = TryCast(ViewState("CurrentKpiMetric"), String)
             If v Is Nothing Then Return String.Empty
             Return v
         End Get
         Set(value As String)
-            ViewState("CurrentSection") = value
+            ViewState("CurrentKpiMetric") = value
         End Set
     End Property
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         If Not IsPostBack Then
             BindFilter()
-            CurrentSection = String.Empty
+            CurrentKpiMetric = String.Empty
             BindAllData()
         End If
     End Sub
@@ -47,11 +43,11 @@ Partial Public Class NewReq
         ddlSection.Items.Clear()
         ddlSection.Items.Add("[All]", "")
         Using cn As New SqlConnection(ConnStr)
-            Using cmd As New SqlCommand("SELECT DISTINCT ISNULL([KPI_Section],'') AS KPI_Section FROM [dbo].[KPITable] ORDER BY KPI_Section", cn)
+            Using cmd As New SqlCommand("SELECT DISTINCT ISNULL([KPI or Standalone Metric],'') AS [KPI or Standalone Metric] FROM [dbo].[KPITable] ORDER BY [KPI or Standalone Metric]", cn)
                 cn.Open()
                 Using rdr = cmd.ExecuteReader()
                     While rdr.Read()
-                        Dim val = rdr("KPI_Section").ToString()
+                        Dim val = rdr("KPI or Standalone Metric").ToString()
                         Dim text = If(String.IsNullOrWhiteSpace(val), "[Unknown]", val)
                         ddlSection.Items.Add(text, val)
                     End While
@@ -65,27 +61,31 @@ Partial Public Class NewReq
     End Sub
 
     Private Sub BindAllData()
-        Dim dt = GetKpiData(CurrentSection)
+        Dim dt = GetKpiData(CurrentKpiMetric)
         gvKPI.DataSource = dt
         gvKPI.DataBind()
         pvKPI.DataSource = dt
         pvKPI.DataBind()
     End Sub
 
-    Private Function GetKpiData(sectionFilter As String) As DataTable
+    Private Function GetKpiData(kpiMetricFilter As String) As DataTable
         Dim sql As String =
-            "SELECT [ID], [KPI ID], [KPI or Standalone Metric], [KPI Name], [KPI Short Description], " &
-            "       [KPI Impact], [Numerator Description], [Denominator Description], [Unit], [Datasource], " &
-            "       [OrderWithinSecton], [Active], [FLAG_DIVISINAL], [FLAG_VENDOR], [FLAG_ENGAGEMENTID], " &
-            "       [FLAG_CONTRACTID], [FLAG_COSTCENTRE], [FLAG_DEUBALvl4], [FLAG_HRID], [FLAG_REQUESTID], [KPI_Section] " &
-            "FROM [dbo].[KPITable] " &
-            "WHERE (@sec = '' OR [KPI_Section] = @sec) " &
-            "ORDER BY [KPI_Section], [KPI Name]"
+"SELECT [ID], [KPI ID], [KPI or Standalone Metric], [KPI Name], [KPI Short Description], " &
+"       [KPI Impact], [Numerator Description], [Denominator Description], [Unit], [Datasource], " &
+"       [OrderWithinSecton], " &
+"       CASE WHEN [Active] IN ('1','Y','y') THEN 'Active' ELSE 'Inactive' END AS [Active], " &
+"       [FLAG_DIVISINAL], [FLAG_VENDOR], [FLAG_ENGAGEMENTID], " &
+"       [FLAG_CONTRACTID], [FLAG_COSTCENTRE], [FLAG_DEUBALvl4], [FLAG_HRID], [FLAG_REQUESTID], [KPI_Section] " &
+"FROM [dbo].[KPITable] " &
+"WHERE (@kpiMetric = '' OR [KPI or Standalone Metric] = @kpiMetric) " &
+"ORDER BY [KPI or Standalone Metric], [KPI Name]"
+
 
         Dim dt As New DataTable()
         Using cn As New SqlConnection(ConnStr)
             Using cmd As New SqlCommand(sql, cn)
-                cmd.Parameters.Add("@sec", SqlDbType.VarChar, 100).Value = If(String.IsNullOrEmpty(sectionFilter), String.Empty, sectionFilter)
+                cmd.Parameters.Add("@kpiMetric", SqlDbType.VarChar, 100).Value =
+                If(String.IsNullOrEmpty(kpiMetricFilter), String.Empty, kpiMetricFilter)
                 Using da As New SqlDataAdapter(cmd)
                     da.Fill(dt)
                 End Using
@@ -94,11 +94,12 @@ Partial Public Class NewReq
         Return dt
     End Function
 
+
     Protected Sub cpMain_Callback(sender As Object, e As CallbackEventArgsBase)
         Select Case e.Parameter
             Case "apply"
                 Dim sel As Object = ddlSection.Value
-                CurrentSection = If(sel Is Nothing, String.Empty, sel.ToString())
+                CurrentKpiMetric = If(sel Is Nothing, String.Empty, sel.ToString())
                 BindAllData()
             Case "exportGrid"
                 If gvKPI.DataSource Is Nothing Then BindAllData()
@@ -148,7 +149,7 @@ Partial Public Class NewReq
     End Sub
 
     Private Sub WriteDataTableAsCsvResponse(dt As DataTable, fileName As String)
-        If dt Is Nothing Then dt = GetKpiData(CurrentSection)
+        If dt Is Nothing Then dt = GetKpiData(CurrentKpiMetric)
         Response.Clear()
         Response.ContentType = "text/csv"
         Response.AddHeader("Content-Disposition", "attachment;filename=" & fileName)
@@ -169,16 +170,17 @@ Partial Public Class NewReq
         Response.End()
     End Sub
 
-    Protected Sub gvKPI_HtmlDataCellPrepared(sender As Object, e As ASPxGridViewTableDataCellEventArgs)
+    Protected Sub gvKPI_HtmlDataCellPrepared(sender As Object, e As ASPxGridViewTableDataCellEventArgs) Handles gvKPI.HtmlDataCellPrepared
         If String.Equals(e.DataColumn.FieldName, "Active", StringComparison.OrdinalIgnoreCase) Then
-            Dim val = If(e.CellValue, "").ToString().Trim().ToLowerInvariant()
-            If val = "no" OrElse val = "false" OrElse val = "0" Then
+            Dim val As String = If(e.CellValue, "").ToString().Trim().ToLowerInvariant()
+            If val = "inactive" Then
                 e.Cell.BackColor = System.Drawing.Color.MistyRose
-            ElseIf val = "yes" OrElse val = "true" OrElse val = "1" Then
+            ElseIf val = "active" Then
                 e.Cell.BackColor = System.Drawing.Color.Honeydew
             End If
         End If
     End Sub
+
 
     Protected Sub pvKPI_CellClick(sender As Object, e As EventArgs)
         Try
@@ -194,18 +196,14 @@ Partial Public Class NewReq
                     Return
                 End If
             End If
-
             ' fallback if reflection fails
-            gvDrill.DataSource = GetKpiData(CurrentSection)
+            gvDrill.DataSource = GetKpiData(CurrentKpiMetric)
             gvDrill.DataBind()
             popupDrillDown.ShowOnPageLoad = True
         Catch
-            gvDrill.DataSource = GetKpiData(CurrentSection)
+            gvDrill.DataSource = GetKpiData(CurrentKpiMetric)
             gvDrill.DataBind()
             popupDrillDown.ShowOnPageLoad = True
         End Try
     End Sub
-
-
-
 End Class
