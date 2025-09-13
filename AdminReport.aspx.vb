@@ -49,6 +49,8 @@ Public Class AdminReport
     Protected Sub btnGroup_Click(sender As Object, e As EventArgs)
         Dim newGroupName As String = "Group " & (GetNextGroupNumber())
         Dim newGroupID As Integer
+        'Dim selectedKPIs As List(Of Object) = gvKPI.GetSelectedFieldValues("KPI_ID")
+        Dim selectedKPIs As List(Of Object) = gvKPI.GetSelectedFieldValues("KPI_ID")
 
         Using cn As New SqlConnection(ConnStr)
             cn.Open()
@@ -60,21 +62,30 @@ Public Class AdminReport
             End Using
 
             ' Loop visible rows and find the checkbox in the template (column index 1 = KPI_ID column)
-            For i As Integer = 0 To gvKPI.VisibleRowCount - 1
-                Dim chk As CheckBox = TryCast(gvKPI.FindRowCellTemplateControl(i, gvKPI.Columns(1), "chkSelect"), CheckBox)
-                If chk IsNot Nothing AndAlso chk.Checked Then
-                    Dim rawValue = gvKPI.GetRowValues(i, "KPI_ID")
-                    If rawValue IsNot Nothing Then
-                        Dim kpiId As String = rawValue.ToString()
-                        Using cmd As New SqlCommand("INSERT INTO KPI_GroupMembers (GroupID, KPI_ID) VALUES (@GroupID, @KPI_ID)", cn)
-                            cmd.Parameters.AddWithValue("@GroupID", newGroupID)
-                            cmd.Parameters.AddWithValue("@KPI_ID", kpiId)
-                            cmd.ExecuteNonQuery()
-                        End Using
-                    End If
-                End If
+            'For i As Integer = 0 To gvKPI.VisibleRowCount - 1
+            '    Dim chk As CheckBox = TryCast(gvKPI.FindRowCellTemplateControl(i, gvKPI.Columns(1), "chkSelect"), CheckBox)
+            '    If chk IsNot Nothing AndAlso chk.Checked Then
+            '        Dim rawValue = gvKPI.GetRowValues(i, "KPI_ID")
+            '        If rawValue IsNot Nothing Then
+            '            Dim kpiId As String = rawValue.ToString()
+            '            Using cmd As New SqlCommand("INSERT INTO KPI_GroupMembers (GroupID, KPI_ID) VALUES (@GroupID, @KPI_ID)", cn)
+            '                cmd.Parameters.AddWithValue("@GroupID", newGroupID)
+            '                cmd.Parameters.AddWithValue("@KPI_ID", kpiId)
+            '                cmd.ExecuteNonQuery()
+            '            End Using
+            '        End If
+            '    End If
+            'Next
+            For Each obj In selectedKPIs
+                Dim kpiId As String = obj.ToString()
+                Using cmd As New SqlCommand("INSERT INTO KPI_GroupMembers (GroupID, KPI_ID) VALUES (@GroupID, @KPI_ID)", cn)
+                    cmd.Parameters.AddWithValue("@GroupID", newGroupID)
+                    cmd.Parameters.AddWithValue("@KPI_ID", kpiId)
+                    cmd.ExecuteNonQuery()
+                End Using
             Next
         End Using
+        gvKPI.Selection.UnselectAll()
 
         BindGroupsGrid()
     End Sub

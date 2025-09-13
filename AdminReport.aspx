@@ -21,7 +21,7 @@
         <div style="display:flex; gap:20px; align-items:flex-start;">
 
             
-            <dx:ASPxGridView ID="gvKPI" runat="server" KeyFieldName="ID" AutoGenerateColumns="False" Width="600px"
+            <%--<dx:ASPxGridView ID="gvKPI" runat="server" KeyFieldName="ID" AutoGenerateColumns="False" Width="600px"
                 OnPageIndexChanged="gvKPI_PageIndexChanged">
                 <Columns>
                     <dx:GridViewDataTextColumn FieldName="KPI_Name" Caption="KPI Name" VisibleIndex="0" />
@@ -36,7 +36,27 @@
                     </dx:GridViewDataTextColumn>
                 </Columns>
                 <SettingsPager PageSize="10" />
-            </dx:ASPxGridView>
+            </dx:ASPxGridView>--%>
+            <dx:ASPxGridView ID="gvKPI" runat="server" KeyFieldName="KPI_ID" AutoGenerateColumns="False" Width="600px"
+    OnPageIndexChanged="gvKPI_PageIndexChanged">
+    <Columns>
+        
+        <dx:GridViewCommandColumn ShowSelectCheckbox="true" VisibleIndex="0" />
+
+        <dx:GridViewDataTextColumn FieldName="KPI_Name" Caption="KPI Name" VisibleIndex="1" />
+        <dx:GridViewDataTextColumn FieldName="KPI_ID" Caption="KPI ID" VisibleIndex="2" />
+    </Columns>
+
+    <SettingsPager PageSize="15" />
+    <SettingsBehavior AllowSelectByRowClick="true" />
+</dx:ASPxGridView>
+           
+
+            
+
+
+
+
 
             
             <dx:ASPxGridView ID="gvGroups" runat="server" AutoGenerateColumns="False" KeyFieldName="GroupID" Width="360px"
@@ -51,7 +71,8 @@
                     </dx:GridViewDataTextColumn>
 
                    
-                    <dx:GridViewCommandColumn ShowDeleteButton="true" ShowEditButton="true" Caption="Actions" VisibleIndex="1" />
+                    <dx:GridViewCommandColumn ShowDeleteButton="true" ShowEditButton="true" Caption="Actions" VisibleIndex="1" 
+                        />
                 </Columns>
 
                
