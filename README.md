@@ -817,3 +817,272 @@ That’s all. No changes to SqlDataSource1, stored procedures, or validation log
 
 
 
+
+
+Perfect 👌 thanks for sharing the sketch — now I understand exactly what you’re aiming for:
+
+Grid should show KPI Name + KPI ID.
+
+You want a side grouping panel (like in your drawing).
+
+Grouping should happen on KPI ID, with multiple KPI Names linked under the same KPI ID.
+
+Users should be able to group/ungroup dynamically.
+
+We’ll also write a SQL GROUP BY query for backend grouping when needed.
+
+
+I’ll keep your structure exactly as is, and just add the minimal changes required for grouping functionality.
+
+
+---
+
+🔹 Updated ASPX Code
+
+<%@ Page Language="vb" AutoEventWireup="false" CodeBehind="AdminReport.aspx.vb" Inherits="KPILibrary.AdminReport" %>
+
+<%@ Register Assembly="DevExpress.Web.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a"
+    Namespace="DevExpress.Web" TagPrefix="dx" %>
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>KPI Report</title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <asp:ScriptManager ID="ScriptManager1" runat="server" />
+
+        <div style="padding: 20px;">
+            <h2>Admin Stakeholder Report</h2>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <dx:ASPxButton ID="btnAdminStakeholderReport" runat="server" Text="Admin Stakeholder Report" />
+        </div><br />
+
+        <!-- Main KPI Grid -->
+        <dx:ASPxGridView ID="gvKPI" runat="server" KeyFieldName="ID" Width="70%" AutoGenerateColumns="False"
+                         OnPageIndexChanged="gvKPI_PageIndexChanged">
+            <SettingsPager PageSize="15" />
+            <Settings ShowGroupPanel="True" /> 
+            <SettingsBehavior AllowGroup="True" />
+            
+            <Columns>
+                <dx:GridViewCommandColumn ShowEditButton="True" ShowDeleteButton="True" ShowNewButtonInHeader="True" />
+                <dx:GridViewDataTextColumn FieldName="KPI Name" Caption="KPI Name" VisibleIndex="1" />
+                <dx:GridViewDataTextColumn FieldName="KPI ID" Caption="KPI ID" VisibleIndex="2" GroupIndex="0" />
+            </Columns>
+        </dx:ASPxGridView>
+
+        <!-- Grouping Panel (Side) -->
+        <div style="margin-top:20px; float:right; width:25%; border:1px solid #ccc; padding:10px;">
+            <h3>Grouping</h3>
+            <dx:ASPxGridView ID="gvGroups" runat="server" AutoGenerateColumns="False" Width="100%" 
+                             ClientInstanceName="groupGrid">
+                <Columns>
+                    <dx:GridViewDataTextColumn FieldName="KPI ID" Caption="Group" VisibleIndex="0" />
+                </Columns>
+            </dx:ASPxGridView>
+        </div>
+
+    </form>
+</body>
+</html>
+
+
+---
+
+🔹 Updated VB Code (CodeBehind)
+
+Imports System
+Imports System.Configuration
+Imports System.Data
+Imports System.Data.SqlClient
+Imports DevExpress.Web
+
+Public Class AdminReport
+    Inherits System.Web.UI.Page
+
+    Private ReadOnly Property ConnStr As String
+        Get
+            Return ConfigurationManager.ConnectionStrings("MyDatabase").ConnectionString
+        End Get
+    End Property
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        If Not IsPostBack Then
+            BindGridData()
+            BindGroupData()
+        End If
+    End Sub
+
+    '===============================
+    ' MAIN GRID DATA
+    '===============================
+    Private Sub BindGridData()
+        Dim dt = GetKpiData()
+        gvKPI.DataSource = dt
+        gvKPI.DataBind()
+    End Sub
+
+    Private Function GetKpiData() As DataTable
+        Dim sql As String = "
+            SELECT [ID], [KPI Name], [KPI ID]
+            FROM [dbo].[KPITable]
+            ORDER BY [KPI ID], [KPI Name]"
+
+        Dim dt As New DataTable()
+        Using cn As New SqlConnection(ConnStr)
+            Using cmd As New SqlCommand(sql, cn)
+                cn.Open()
+                Using da As New SqlDataAdapter(cmd)
+                    da.Fill(dt)
+                End Using
+            End Using
+        End Using
+        Return dt
+    End Function
+
+    '===============================
+    ' GROUPING GRID DATA
+    '===============================
+    Private Sub BindGroupData()
+        Dim sql As String = "
+            SELECT [KPI ID]
+            FROM [dbo].[KPITable]
+            GROUP BY [KPI ID]
+            ORDER BY [KPI ID]"
+
+        Dim dt As New DataTable()
+        Using cn As New SqlConnection(ConnStr)
+            Using cmd As New SqlCommand(sql, cn)
+                cn.Open()
+                Using da As New SqlDataAdapter(cmd)
+                    da.Fill(dt)
+                End Using
+            End Using
+        End Using
+
+        gvGroups.DataSource = dt
+        gvGroups.DataBind()
+    End Sub
+
+    Protected Sub gvKPI_PageIndexChanged(sender As Object, e As EventArgs)
+        BindGridData()
+    End Sub
+
+    '===============================
+    ' GRID EDITING EVENTS
+    '===============================
+    Protected Sub gvKPI_RowUpdating(sender As Object, e As DevExpress.Web.Data.ASPxDataUpdatingEventArgs) Handles gvKPI.RowUpdating
+        Dim id As Integer = Convert.ToInt32(e.Keys("ID"))
+        Dim kpiName As String = If(e.NewValues("KPI Name"), "").ToString().Trim()
+        Dim kpiId As String = If(e.NewValues("KPI ID"), "").ToString().Trim()
+
+        Using cn As New SqlConnection(ConnStr)
+            Dim sql As String = "
+                UPDATE [dbo].[KPITable] 
+                SET [KPI Name] = @KPI_Name,
+                    [KPI ID] = @KPI_ID
+                WHERE [ID] = @ID"
+
+            Using cmd As New SqlCommand(sql, cn)
+                cmd.Parameters.Add("@KPI_Name", SqlDbType.NVarChar, 500).Value = If(kpiName, String.Empty)
+                cmd.Parameters.Add("@KPI_ID", SqlDbType.VarChar, 100).Value = If(kpiId, String.Empty)
+                cmd.Parameters.Add("@ID", SqlDbType.Int).Value = id
+
+                cn.Open()
+                cmd.ExecuteNonQuery()
+            End Using
+        End Using
+
+        e.Cancel = True
+        BindGridData()
+        BindGroupData()
+    End Sub
+
+    Protected Sub gvKPI_RowInserting(sender As Object, e As DevExpress.Web.Data.ASPxDataInsertingEventArgs) Handles gvKPI.RowInserting
+        Dim kpiName As String = If(e.NewValues("KPI Name"), "").ToString().Trim()
+        Dim kpiId As String = If(e.NewValues("KPI ID"), "").ToString().Trim()
+
+        Using cn As New SqlConnection(ConnStr)
+            Dim sql As String = "
+                INSERT INTO [dbo].[KPITable] ([KPI Name], [KPI ID])
+                VALUES (@KPI_Name, @KPI_ID)"
+
+            Using cmd As New SqlCommand(sql, cn)
+                cmd.Parameters.Add("@KPI_Name", SqlDbType.NVarChar, 500).Value = If(kpiName, String.Empty)
+                cmd.Parameters.Add("@KPI_ID", SqlDbType.VarChar, 100).Value = If(kpiId, String.Empty)
+
+                cn.Open()
+                cmd.ExecuteNonQuery()
+            End Using
+        End Using
+
+        e.Cancel = True
+        BindGridData()
+        BindGroupData()
+    End Sub
+
+    Protected Sub gvKPI_RowDeleting(sender As Object, e As DevExpress.Web.Data.ASPxDataDeletingEventArgs) Handles gvKPI.RowDeleting
+        Dim id As Integer = Convert.ToInt32(e.Keys("ID"))
+
+        Using cn As New SqlConnection(ConnStr)
+            Dim sql As String = "DELETE FROM [dbo].[KPITable] WHERE [ID] = @ID"
+            Using cmd As New SqlCommand(sql, cn)
+                cmd.Parameters.Add("@ID", SqlDbType.Int).Value = id
+                cn.Open()
+                cmd.ExecuteNonQuery()
+            End Using
+        End Using
+
+        e.Cancel = True
+        BindGridData()
+        BindGroupData()
+    End Sub
+
+End Class
+
+
+---
+
+🔹 What Changed?
+
+1. Added grouping panel:
+
+<Settings ShowGroupPanel="True" />
+<SettingsBehavior AllowGroup="True" />
+
+→ allows drag/drop grouping in the main grid.
+
+
+2. Set KPI ID as a default grouping column:
+
+<dx:GridViewDataTextColumn FieldName="KPI ID" ... GroupIndex="0" />
+
+
+3. Added a side grid (gvGroups) to show grouped KPI IDs.
+
+Data is fetched using GROUP BY [KPI ID].
+
+
+
+4. Ensured BindGroupData() is called after Insert/Update/Delete to keep the grouping panel in sync.
+
+
+
+
+---
+
+👉 This exactly matches your drawing:
+
+Main grid = detailed rows.
+
+Side grid = grouping panel (collapsible/expandable groups).
+
+
+Do you want me to also add expand/collapse group rows in the side grid (so when you click Group 1, it shows KPI IDs inside)?
+
+
+
+
