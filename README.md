@@ -1308,3 +1308,114 @@ End Sub
 
 
 
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------
+Ah 👍 got it.
+You’re seeing an error because in DevExpress **WebForms ASPxGridView**, there is **no `DetailRowDataBind` event** (that’s a WinForms/WPF style event).
+
+For ASPxGridView in **ASP.NET WebForms**, the correct way is to use:
+
+* `OnBeforePerformDataSelect` inside the **detail grid** (the one inside `<DetailRow>`).
+
+That’s exactly what you already had in your working code (`gvGroupMembers_BeforePerformDataSelect`).
+
+---
+
+### ✅ Fixed Example for Your Case (with hardcoded values)
+
+**ASPX**
+
+```xml
+<dx:ASPxGridView ID="gvDemo" runat="server" AutoGenerateColumns="False" KeyFieldName="ID" Width="500px">
+    <Columns>
+        <dx:GridViewDataTextColumn FieldName="Name" Caption="Name" VisibleIndex="0" />
+        <dx:GridViewDataTextColumn FieldName="Role" Caption="Role" VisibleIndex="1" />
+    </Columns>
+
+    <SettingsDetail ShowDetailRow="true" />
+
+    <Templates>
+        <DetailRow>
+            <dx:ASPxGridView ID="gvDetail" runat="server" AutoGenerateColumns="False" 
+                KeyFieldName="Project" Width="450px"
+                OnBeforePerformDataSelect="gvDetail_BeforePerformDataSelect">
+                <Columns>
+                    <dx:GridViewDataTextColumn FieldName="Project" Caption="Project" VisibleIndex="0" />
+                    <dx:GridViewDataTextColumn FieldName="Status" Caption="Status" VisibleIndex="1" />
+                </Columns>
+            </dx:ASPxGridView>
+        </DetailRow>
+    </Templates>
+</dx:ASPxGridView>
+```
+
+---
+
+**VB.NET Code Behind**
+
+```vb
+Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+    If Not IsPostBack Then
+        BindMainGrid()
+    End If
+End Sub
+
+Private Sub BindMainGrid()
+    Dim dt As New DataTable()
+    dt.Columns.Add("ID", GetType(Integer))
+    dt.Columns.Add("Name", GetType(String))
+    dt.Columns.Add("Role", GetType(String))
+
+    dt.Rows.Add(1, "Niranjan", "Admin")
+    dt.Rows.Add(2, "Anita", "Manager")
+    dt.Rows.Add(3, "Rahul", "User")
+
+    gvDemo.DataSource = dt
+    gvDemo.DataBind()
+End Sub
+
+Protected Sub gvDetail_BeforePerformDataSelect(sender As Object, e As EventArgs)
+    Dim detailGrid As DevExpress.Web.ASPxGridView = CType(sender, DevExpress.Web.ASPxGridView)
+    Dim parentID As Integer = Convert.ToInt32((CType(detailGrid.NamingContainer, DevExpress.Web.GridViewDetailRowTemplateContainer)).KeyValue)
+
+    Dim dt As New DataTable()
+    dt.Columns.Add("Project", GetType(String))
+    dt.Columns.Add("Status", GetType(String))
+
+    If parentID = 1 Then
+        dt.Rows.Add("KPI001", "Active")
+        dt.Rows.Add("KPI002", "Inactive")
+    ElseIf parentID = 2 Then
+        dt.Rows.Add("HR001", "Ongoing")
+        dt.Rows.Add("HR002", "Completed")
+    Else
+        dt.Rows.Add("USR001", "Pending")
+        dt.Rows.Add("USR002", "Done")
+    End If
+
+    detailGrid.DataSource = dt
+End Sub
+```
+
+---
+
+### 🔑 Key Fix
+
+* Use `OnBeforePerformDataSelect` on the nested grid.
+* `KeyValue` from the parent row gives you the parent ID.
+* Bind hardcoded detail rows inside that event.
+
+---
+
+👉 Do you want me to also add the **Expand/Collapse text instead of +/- buttons** here (like your last screenshot), or keep the default DevExpress +/- icons?
+
+
+
+
+
