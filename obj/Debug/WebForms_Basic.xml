@@ -82,6 +82,15 @@ Auto-generated field.
 To modify move field declaration from designer file to code-behind file.
 </remarks>
 </member>
+<member name="F:KPILibrary.AdminReport._btnExpand">
+<summary>
+btnExpand control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
 <member name="F:KPILibrary._Default._btnLogout">
 <summary>
 btnLogout control.
@@ -397,153 +406,9 @@ Auto-generated field.
 To modify move field declaration from designer file to code-behind file.
 </remarks>
 </member>
-<member name="F:KPILibrary.NewReq._cpMain">
+<member name="F:KPILibrary.NewReq._gvDemo">
 <summary>
-cpMain control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
-<member name="F:KPILibrary.NewReq._lblSection">
-<summary>
-lblSection control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
-<member name="F:KPILibrary.NewReq._ddlSection">
-<summary>
-ddlSection control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
-<member name="F:KPILibrary.NewReq._btnApply">
-<summary>
-btnApply control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
-<member name="F:KPILibrary.NewReq._btnExportGridXlsx">
-<summary>
-btnExportGridXlsx control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
-<member name="F:KPILibrary.NewReq._btnExportPivotXlsx">
-<summary>
-btnExportPivotXlsx control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
-<member name="F:KPILibrary.NewReq._gvKPI">
-<summary>
-gvKPI control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
-<member name="F:KPILibrary.NewReq._gridExporter">
-<summary>
-gridExporter control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
-<member name="F:KPILibrary.NewReq._pvKPI">
-<summary>
-pvKPI control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
-<member name="F:KPILibrary.NewReq._fieldKPISection">
-<summary>
-fieldKPISection control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
-<member name="F:KPILibrary.NewReq._fieldKPIName">
-<summary>
-fieldKPIName control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
-<member name="F:KPILibrary.NewReq._fieldActive">
-<summary>
-fieldActive control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
-<member name="F:KPILibrary.NewReq._fieldCount">
-<summary>
-fieldCount control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
-<member name="F:KPILibrary.NewReq._pivotExporter">
-<summary>
-pivotExporter control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
-<member name="F:KPILibrary.NewReq._popupDrillDown">
-<summary>
-popupDrillDown control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
-<member name="F:KPILibrary.NewReq._gvDrill">
-<summary>
-gvDrill control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
-<member name="F:KPILibrary.NewReq._btnClosePopup">
-<summary>
-btnClosePopup control.
+gvDemo control.
 </summary>
 <remarks>
 Auto-generated field.

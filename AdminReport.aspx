@@ -59,42 +59,54 @@
 
 
             
-            <dx:ASPxGridView ID="gvGroups" runat="server" AutoGenerateColumns="False" KeyFieldName="GroupID" Width="360px"
-                OnPageIndexChanged="gvGroups_PageIndexChanged"
-                OnRowDeleting="gvGroups_RowDeleting"
-                OnRowUpdating="gvGroups_RowUpdating">
+<dx:ASPxGridView ID="gvGroups" runat="server" AutoGenerateColumns="False" KeyFieldName="GroupID" Width="360px"
+    OnPageIndexChanged="gvGroups_PageIndexChanged"
+    OnRowDeleting="gvGroups_RowDeleting"
+    OnRowUpdating="gvGroups_RowUpdating"
+    OnCustomButtonCallback="gvGroups_CustomButtonCallback"
+    OnHtmlCommandCellPrepared="gvGroups_HtmlCommandCellPrepared">
+
+    <Columns>
+        
+        <dx:GridViewCommandColumn Caption="Expand" VisibleIndex="0" ButtonType="Image">
+            <CustomButtons>
+                <dx:GridViewCommandColumnCustomButton ID="btnExpand">
+                    <Image Url="~/Images/plus.png" Width="16px" Height="16px" />
+                </dx:GridViewCommandColumnCustomButton>
+            </CustomButtons>
+        </dx:GridViewCommandColumn>
+
+        <dx:GridViewDataTextColumn FieldName="GroupName" Caption="Group Name" VisibleIndex="1">
+            <PropertiesTextEdit>
+                <ValidationSettings RequiredField-IsRequired="true" />
+            </PropertiesTextEdit>
+        </dx:GridViewDataTextColumn>
+
+        <dx:GridViewCommandColumn ShowDeleteButton="true" ShowEditButton="true" Caption="Actions" VisibleIndex="2" />
+    </Columns>
+
+    <Templates>
+        <DetailRow>
+            <dx:ASPxGridView ID="gvGroupMembers" runat="server" AutoGenerateColumns="False"
+                KeyFieldName="KPI_ID" Width="320px"
+                OnBeforePerformDataSelect="gvGroupMembers_BeforePerformDataSelect"
+                OnRowDeleting="gvGroupMembers_RowDeleting">
                 <Columns>
-                    <dx:GridViewDataTextColumn FieldName="GroupName" Caption="Group Name" VisibleIndex="0">
-                        <PropertiesTextEdit>
-                            <ValidationSettings RequiredField-IsRequired="true" />
-                        </PropertiesTextEdit>
-                    </dx:GridViewDataTextColumn>
-
-                   
-                    <dx:GridViewCommandColumn ShowDeleteButton="true" ShowEditButton="true" Caption="Actions" VisibleIndex="1" 
-                        />
+                    <dx:GridViewDataTextColumn FieldName="KPI_ID" Caption="KPI ID" VisibleIndex="0" />
+                    <dx:GridViewCommandColumn ShowDeleteButton="True" Caption="Remove" VisibleIndex="1" />
                 </Columns>
-
-               
-                <Templates>
-                    <DetailRow>
-                        <dx:ASPxGridView ID="gvGroupMembers" runat="server" AutoGenerateColumns="False"
-                            KeyFieldName="KPI_ID" Width="320px"
-                            OnBeforePerformDataSelect="gvGroupMembers_BeforePerformDataSelect"
-                            OnRowDeleting="gvGroupMembers_RowDeleting">
-                            <Columns>
-                                <dx:GridViewDataTextColumn FieldName="KPI_ID" Caption="KPI ID" VisibleIndex="0" />
-                                <dx:GridViewCommandColumn ShowDeleteButton="True" Caption="Remove" VisibleIndex="1" />
-                            </Columns>
-                            <SettingsPager PageSize="10" />
-                        </dx:ASPxGridView>
-                    </DetailRow>
-                </Templates>
-
                 <SettingsPager PageSize="10" />
-                <SettingsEditing Mode="Inline" />
-                <SettingsDetail ShowDetailRow="true" />
             </dx:ASPxGridView>
+        </DetailRow>
+    </Templates>
+
+    <SettingsPager PageSize="10" />
+    <SettingsEditing Mode="Inline" />
+        <SettingsDetail ShowDetailRow="true" ShowDetailButtons="false" />
+
+</dx:ASPxGridView>
+
+
 
         </div>
     </form>

@@ -57,4 +57,13 @@ Partial Public Class AdminReport
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents gvGroups As Global.DevExpress.Web.ASPxGridView
+
+    '''<summary>
+    '''btnExpand control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnExpand As Global.DevExpress.Web.GridViewCommandColumnCustomButton
 End Class

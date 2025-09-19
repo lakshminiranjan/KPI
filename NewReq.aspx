@@ -18,80 +18,54 @@
 </head>
 <body>
 <form id="form1" runat="server">
-    <dx:ASPxCallbackPanel ID="cpMain" runat="server" ClientInstanceName="cpMain" OnCallback="cpMain_Callback">
-        <PanelCollection>
-            <dx:PanelContent>
-                <div class="title">KPI Report</div>
-                <div class="toolbar">
-                    <dx:ASPxLabel ID="lblSection" runat="server" Text="KPI or Standalone Metric:" AssociatedControlID="ddlSection" />
-                    <dx:ASPxComboBox ID="ddlSection" runat="server" Width="300px"
-    IncrementalFilteringMode="Contains"
-    DropDownStyle="DropDownList"
-    ClientInstanceName="ddlSection"
-    ValueType="System.String"
-    SelectionMode="CheckColumn"
-    EnableSelectAll="True">
-    <Items>
-        <dx:ListEditItem Text="Section 1" Value="1" />
-        <dx:ListEditItem Text="Section 2" Value="2" />
-        <dx:ListEditItem Text="Section 3" Value="3" />
-    </Items>
-</dx:ASPxComboBox>
+   <%--<dx:ASPxGridView ID="gvDemo" runat="server" AutoGenerateColumns="False" KeyFieldName="ID" Width="500px">
+    <Columns>
+        <dx:GridViewDataTextColumn FieldName="Name" Caption="Name" VisibleIndex="0" />
+        <dx:GridViewDataTextColumn FieldName="Role" Caption="Role" VisibleIndex="1" />
+    </Columns>
 
-             
-                    
-                    
-                    <dx:ASPxButton ID="btnApply" runat="server" Text="Apply Filter" AutoPostBack="False">
-                        <ClientSideEvents Click="function(){ cpMain.PerformCallback('apply'); }" />
-                    </dx:ASPxButton>
-                    <dx:ASPxButton ID="btnExportGridXlsx" runat="server" Text="Export Grid (XLSX)" AutoPostBack="False">
-                        <ClientSideEvents Click="function(){ cpMain.PerformCallback('exportGrid'); }" />
-                    </dx:ASPxButton>
-                    <dx:ASPxButton ID="btnExportPivotXlsx" runat="server" Text="Export Pivot (XLSX)" AutoPostBack="False">
-                        <ClientSideEvents Click="function(){ cpMain.PerformCallback('exportPivot'); }" />
-                    </dx:ASPxButton>
-                </div>
-                <div class="section">
-                    <dx:ASPxGridView ID="gvKPI" runat="server" ClientInstanceName="gvKPI"
-                        KeyFieldName="ID" Width="100%" OnHtmlDataCellPrepared="gvKPI_HtmlDataCellPrepared">
-                        <Settings ShowFilterRow="True" ShowGroupPanel="True" />
-                        <SettingsBehavior AllowSort="True" AllowGroup="True" />
-                        <SettingsPager PageSize="15" />
-                    </dx:ASPxGridView>
-                    <dx:ASPxGridViewExporter ID="gridExporter" runat="server" GridViewID="gvKPI" />
-                </div>
-                <div class="section">
-                    <dxpg:ASPxPivotGrid ID="pvKPI" runat="server" ClientInstanceName="pvKPI"
-                        OnCellClick="pvKPI_CellClick">
-                        <Fields>
-                            <dxpg:PivotGridField ID="fieldKPISection" FieldName="KPI or Standalone Metric" Area="RowArea" Caption="KPI or Standalone Metric" />
-                            <dxpg:PivotGridField ID="fieldKPIName" FieldName="KPI Name" Area="RowArea" Caption="KPI Name" />
-                          <dx:PivotGridField ID="fieldActive" Area="RowArea" FieldName="Active" Caption="Active Status" />
-                            <dxpg:PivotGridField ID="fieldCount" FieldName="KPI ID" Area="DataArea" Caption="Count of KPI" SummaryType="Count" />
-                        </Fields>
-                        <OptionsView ShowRowGrandTotals="True" ShowColumnGrandTotals="True" />
-                        <OptionsCustomization AllowFilter="True" AllowSort="True" />
-                    </dxpg:ASPxPivotGrid>
-                    <dxpg:ASPxPivotGridExporter ID="pivotExporter" runat="server" ASPxPivotGridID="pvKPI" />
-                </div>
-                <dx:ASPxPopupControl ID="popupDrillDown" runat="server" ClientInstanceName="popupDrillDown"
-                    Modal="True" HeaderText="Drilldown Details" Width="1000px">
-                    <ContentCollection>
-                        <dx:PopupControlContentControl>
-                            <dx:ASPxGridView ID="gvDrill" runat="server" KeyFieldName="ID" Width="100%">
-                                <SettingsPager PageSize="15" />
-                            </dx:ASPxGridView>
-                            <div style="margin-top:10px; text-align:right;">
-                                <dx:ASPxButton ID="btnClosePopup" runat="server" Text="Close" AutoPostBack="False">
-                                    <ClientSideEvents Click="function(){ popupDrillDown.Hide(); }" />
-                                </dx:ASPxButton>
-                            </div>
-                        </dx:PopupControlContentControl>
-                    </ContentCollection>
-                </dx:ASPxPopupControl> 
-            </dx:PanelContent>
-        </PanelCollection>
-    </dx:ASPxCallbackPanel>
+    <SettingsDetail ShowDetailRow="true" />
+
+    <Templates>
+        <DetailRow>
+            <dx:ASPxGridView ID="gvDetail" runat="server" AutoGenerateColumns="False" 
+                KeyFieldName="Project" Width="450px"
+                OnBeforePerformDataSelect="gvDetail_BeforePerformDataSelect">
+                <Columns>
+                    <dx:GridViewDataTextColumn FieldName="Project" Caption="Project" VisibleIndex="0" />
+                    <dx:GridViewDataTextColumn FieldName="Status" Caption="Status" VisibleIndex="1" />
+                </Columns>
+            </dx:ASPxGridView>
+        </DetailRow>
+    </Templates>
+</dx:ASPxGridView>--%>
+
+   <dx:ASPxGridView ID="gvDemo" runat="server" AutoGenerateColumns="False" 
+    KeyFieldName="ID" Width="500px">
+    <Columns>
+        <dx:GridViewDataTextColumn FieldName="Name" Caption="Name" VisibleIndex="0" />
+        <dx:GridViewDataTextColumn FieldName="Role" Caption="Role" VisibleIndex="1" />
+    </Columns>
+
+    <SettingsDetail ShowDetailRow="true" />
+
+    <Templates>
+        <DetailRow>
+            <!-- Replace nested Grid with TreeList for branching -->
+            <dx:ASPxTreeList ID="treeProjects" runat="server" AutoGenerateColumns="False"
+                KeyFieldName="Project" ParentFieldName="ParentID" Width="450px"
+                OnBeforePerformDataSelect="treeProjects_BeforePerformDataSelect">
+                <Columns>
+                    <dx:TreeListDataColumn FieldName="Project" Caption="Project" VisibleIndex="0" />
+                    <dx:TreeListDataColumn FieldName="Status" Caption="Status" VisibleIndex="1" />
+                </Columns>
+            </dx:ASPxTreeList>
+        </DetailRow>
+    </Templates>
+</dx:ASPxGridView>
+
+
+
 </form>
 </body>
 </html>

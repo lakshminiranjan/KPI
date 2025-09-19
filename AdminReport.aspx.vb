@@ -184,4 +184,36 @@ Public Class AdminReport
         BindGroupsGrid()
     End Sub
 
+    Protected Sub gvGroups_CustomButtonCallback(sender As Object, e As ASPxGridViewCustomButtonCallbackEventArgs) Handles gvGroups.CustomButtonCallback
+        Dim grid As ASPxGridView = CType(sender, ASPxGridView)
+
+        If Not grid.DetailRows.IsVisible(e.VisibleIndex) Then
+            grid.DetailRows.ExpandRow(e.VisibleIndex)
+        Else
+            grid.DetailRows.CollapseRow(e.VisibleIndex)
+        End If
+    End Sub
+
+    Protected Sub gvGroups_HtmlCommandCellPrepared(sender As Object, e As DevExpress.Web.ASPxGridViewTableCommandCellEventArgs) Handles gvGroups.HtmlCommandCellPrepared
+        If e.CommandColumn.Caption = "Expand" Then
+            Dim grid As ASPxGridView = CType(sender, ASPxGridView)
+
+            'Find the custom button
+            Dim btn = TryCast(e.Cell.Controls.OfType(Of ASPxButton)().FirstOrDefault(), ASPxButton)
+            If btn IsNot Nothing Then
+                'Check if this row is expanded
+                If grid.DetailRows.IsVisible(e.VisibleIndex) Then
+                    btn.Image.Url = "~/Images/minus.png"
+                Else
+                    btn.Image.Url = "~/Images/plus.png"
+                End If
+            End If
+        End If
+    End Sub
+
+
+
+
+
+
 End Class
