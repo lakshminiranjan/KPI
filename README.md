@@ -651,3 +651,771 @@ Public Overrides Sub VerifyRenderingInServerForm(control As Control)
 End Sub
 
 
+
+
+
+
+
+
+Imports System
+Imports System.Data
+Imports System.Data.SqlClient
+Imports DevExpress.Web
+
+Public Class AdminReport
+    Inherits System.Web.UI.Page
+
+    Private ReadOnly Property ConnStr As String
+        Get
+            Return System.Configuration.ConfigurationManager.ConnectionStrings("MyDatabase").ConnectionString
+        End Get
+    End Property
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        If Not IsPostBack Then
+            BindKPIGrid()
+            BindGroupsGrid()
+        Else
+            Dim eventTarget = Request("__EVENTTARGET")
+            Dim eventArg = Request("__EVENTARGUMENT")
+            If eventTarget = "AddKPI" AndAlso Not String.IsNullOrEmpty(eventArg) Then
+                LoadKPISelectionPopup(Convert.ToInt32(eventArg))
+            End If
+        End If
+    End Sub
+
+    ' Load KPI Table
+    Private Sub BindKPIGrid(Optional filter As String = "")
+        Dim sql As String = "SELECT [ID], [KPI Name] AS KPI_Name, [KPI ID] AS KPI_ID FROM [dbo].[KPITable]"
+        If Not String.IsNullOrEmpty(filter) Then
+            sql &= " WHERE [KPI ID] LIKE @KPI_ID"
+        End If
+        sql &= " ORDER BY [KPI ID]"
+
+        Dim dt As New DataTable()
+        Using cn As New SqlConnection(ConnStr)
+            Using cmd As New SqlCommand(sql, cn)
+                If Not String.IsNullOrEmpty(filter) Then
+                    cmd.Parameters.AddWithValue("@KPI_ID", "%" & filter & "%")
+                End If
+                Using da As New SqlDataAdapter(cmd)
+                    da.Fill(dt)
+                End Using
+            End Using
+        End Using
+
+        gvKPI.DataSource = dt
+        gvKPI.DataBind()
+    End Sub
+
+    Private Sub BindGroupsGrid()
+        Dim sql As String = "SELECT DISTINCT GroupID, GroupName FROM KPI_Groups ORDER BY GroupID"
+        Dim dt As New DataTable()
+        Using cn As New SqlConnection(ConnStr)
+            Using da As New SqlDataAdapter(sql, cn)
+                da.Fill(dt)
+            End Using
+        End Using
+        gvGroups.DataSource = dt
+        gvGroups.DataBind()
+    End Sub
+
+    Protected Sub btnGroup_Click(sender As Object, e As EventArgs)
+        Dim newGroupName As String = "Group " & (GetNextGroupNumber())
+        Dim newGroupID As Integer
+
+        Using cn As New SqlConnection(ConnStr)
+            cn.Open()
+            Using cmdGroup As New SqlCommand("INSERT INTO KPI_Groups (GroupName) OUTPUT INSERTED.GroupID VALUES (@GroupName)", cn)
+                cmdGroup.Parameters.AddWithValue("@GroupName", newGroupName)
+                newGroupID = Convert.ToInt32(cmdGroup.ExecuteScalar())
+            End Using
+
+            For i As Integer = 0 To gvKPI.VisibleRowCount - 1
+                Dim chk As CheckBox = TryCast(gvKPI.FindRowCellTemplateControl(i, gvKPI.Columns(1), "chkSelect"), CheckBox)
+                If chk IsNot Nothing AndAlso chk.Checked Then
+                    Dim kpiIdObj = gvKPI.GetRowValues(i, "KPI_ID")
+                    If kpiIdObj IsNot Nothing Then
+                        Using cmd As New SqlCommand("INSERT INTO KPI_GroupMembers (GroupID, KPI_ID) VALUES (@GroupID, @KPI_ID)", cn)
+                            cmd.Parameters.AddWithValue("@GroupID", newGroupID)
+                            cmd.Parameters.AddWithValue("@KPI_ID", kpiIdObj.ToString())
+                            cmd.ExecuteNonQuery()
+                        End Using
+                    End If
+                End If
+            Next
+        End Using
+
+        BindGroupsGrid()
+        BindKPIGrid()
+    End Sub
+
+    Private Function GetNextGroupNumber() As Integer
+        Dim sql As String = "SELECT COUNT(*) FROM KPI_Groups"
+        Using cn As New SqlConnection(ConnStr)
+            Using cmd As New SqlCommand(sql, cn)
+                cn.Open()
+                Return Convert.ToInt32(cmd.ExecuteScalar()) + 1
+            End Using
+        End Using
+    End Function
+
+    Protected Sub gvGroups_RowDeleting(sender As Object, e As DevExpress.Web.Data.ASPxDataDeletingEventArgs)
+        Dim groupId As Integer = Convert.ToInt32(e.Keys("GroupID"))
+        Using cn As New SqlConnection(ConnStr)
+            cn.Open()
+            Using cmd As New SqlCommand("DELETE FROM KPI_GroupMembers WHERE GroupID=@GroupID", cn)
+                cmd.Parameters.AddWithValue("@GroupID", groupId)
+                cmd.ExecuteNonQuery()
+            End Using
+            Using cmd As New SqlCommand("DELETE FROM KPI_Groups WHERE GroupID=@GroupID", cn)
+                cmd.Parameters.AddWithValue("@GroupID", groupId)
+                cmd.ExecuteNonQuery()
+            End Using
+        End Using
+        e.Cancel = True
+        BindGroupsGrid()
+    End Sub
+
+    Protected Sub gvGroups_RowUpdating(sender As Object, e As DevExpress.Web.Data.ASPxDataUpdatingEventArgs)
+        Dim groupId As Integer = Convert.ToInt32(e.Keys("GroupID"))
+        Dim newName As String = Convert.ToString(e.NewValues("GroupName"))
+        Using cn As New SqlConnection(ConnStr)
+            Using cmd As New SqlCommand("UPDATE KPI_Groups SET GroupName=@GroupName WHERE GroupID=@GroupID", cn)
+                cmd.Parameters.AddWithValue("@GroupName", newName)
+                cmd.Parameters.AddWithValue("@GroupID", groupId)
+                cn.Open()
+                cmd.ExecuteNonQuery()
+            End Using
+        End Using
+        e.Cancel = True
+        gvGroups.CancelEdit()
+        BindGroupsGrid()
+    End Sub
+
+    Protected Sub gvGroupMembers_BeforePerformDataSelect(sender As Object, e As EventArgs)
+        Dim detailGrid As ASPxGridView = CType(sender, ASPxGridView)
+        Dim groupId As Integer = Convert.ToInt32((CType(detailGrid.NamingContainer, GridViewDetailRowTemplateContainer)).KeyValue)
+        Dim sql As String = "SELECT KPI_ID FROM KPI_GroupMembers WHERE GroupID = @GroupID"
+        Dim dt As New DataTable()
+        Using cn As New SqlConnection(ConnStr)
+            Using da As New SqlDataAdapter(sql, cn)
+                da.SelectCommand.Parameters.AddWithValue("@GroupID", groupId)
+                da.Fill(dt)
+            End Using
+        End Using
+        detailGrid.DataSource = dt
+    End Sub
+
+    Protected Sub gvGroupMembers_RowDeleting(sender As Object, e As DevExpress.Web.Data.ASPxDataDeletingEventArgs)
+        Dim detailGrid As ASPxGridView = CType(sender, ASPxGridView)
+        Dim groupId As Integer = Convert.ToInt32((CType(detailGrid.NamingContainer, GridViewDetailRowTemplateContainer)).KeyValue)
+        Dim kpiId As String = e.Keys("KPI_ID").ToString()
+        Using cn As New SqlConnection(ConnStr)
+            Using cmd As New SqlCommand("DELETE FROM KPI_GroupMembers WHERE GroupID=@GroupID AND KPI_ID=@KPI_ID", cn)
+                cmd.Parameters.AddWithValue("@GroupID", groupId)
+                cmd.Parameters.AddWithValue("@KPI_ID", kpiId)
+                cn.Open()
+                cmd.ExecuteNonQuery()
+            End Using
+        End Using
+        e.Cancel = True
+        detailGrid.DataBind()
+    End Sub
+
+    Protected Sub gvKPI_PageIndexChanged(sender As Object, e As EventArgs)
+        BindKPIGrid()
+    End Sub
+
+    Protected Sub gvGroups_PageIndexChanged(sender As Object, e As EventArgs)
+        BindGroupsGrid()
+    End Sub
+
+    ' Load KPI Selection Popup
+    Private Sub LoadKPISelectionPopup(groupId As Integer)
+        hdnSelectedGroupId.Value = groupId.ToString()
+        Dim allKpi As New DataTable()
+        Using cn As New SqlConnection(ConnStr)
+            Using da As New SqlDataAdapter("SELECT [KPI ID] AS KPI_ID FROM KPITable ORDER BY [KPI ID]", cn)
+                da.Fill(allKpi)
+            End Using
+        End Using
+
+        ' Get existing KPIs for this group
+        Dim existing As New List(Of String)
+        Using cn As New SqlConnection(ConnStr)
+            Using cmd As New SqlCommand("SELECT KPI_ID FROM KPI_GroupMembers WHERE GroupID=@GroupID", cn)
+                cmd.Parameters.AddWithValue("@GroupID", groupId)
+                cn.Open()
+                Using rdr = cmd.ExecuteReader()
+                    While rdr.Read()
+                        existing.Add(rdr("KPI_ID").ToString())
+                    End While
+                End Using
+            End Using
+        End Using
+
+        chkKPIList.Items.Clear()
+        For Each row As DataRow In allKpi.Rows
+            Dim kpiId As String = row("KPI_ID").ToString()
+            Dim item As New DevExpress.Web.ListEditItem(kpiId, kpiId)
+            item.Selected = existing.Contains(kpiId)
+            chkKPIList.Items.Add(item)
+        Next
+
+        popupAddKPI.ShowOnPageLoad = True
+    End Sub
+
+    Protected Sub btnSaveKPI_Click(sender As Object, e As EventArgs)
+        Dim groupId As Integer = Convert.ToInt32(hdnSelectedGroupId.Value)
+        Dim selected = chkKPIList.SelectedValues.Cast(Of String)().ToList()
+
+        Using cn As New SqlConnection(ConnStr)
+            cn.Open()
+
+            ' First remove all KPIs from group (so we can reset selection)
+            Using cmdDel As New SqlCommand("DELETE FROM KPI_GroupMembers WHERE GroupID=@GroupID", cn)
+                cmdDel.Parameters.AddWithValue("@GroupID", groupId)
+                cmdDel.ExecuteNonQuery()
+            End Using
+
+            ' Add selected KPIs
+            For Each kpiId In selected
+                Using cmdAdd As New SqlCommand("INSERT INTO KPI_GroupMembers (GroupID, KPI_ID) VALUES (@GroupID, @KPI_ID)", cn)
+                    cmdAdd.Parameters.AddWithValue("@GroupID", groupId)
+                    cmdAdd.Parameters.AddWithValue("@KPI_ID", kpiId)
+                    cmdAdd.ExecuteNonQuery()
+                End Using
+            Next
+        End Using
+
+        popupAddKPI.ShowOnPageLoad = False
+        BindGroupsGrid()
+    End Sub
+End Class
+
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>KPI Report</title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <asp:ScriptManager ID="ScriptManager1" runat="server" />
+
+        <h2>Admin KPI Grouping</h2>
+
+        <dx:ASPxButton ID="btnGroup" runat="server" Text="Group" AutoPostBack="true" OnClick="btnGroup_Click" />
+        <br/><br/>
+
+        <div style="display:flex; gap:20px; align-items:flex-start;">
+
+           
+            <dx:ASPxGridView ID="gvKPI" runat="server" KeyFieldName="KPI_ID" AutoGenerateColumns="False" Width="600px"
+                OnPageIndexChanged="gvKPI_PageIndexChanged">
+                <Columns>
+                    <dx:GridViewDataTextColumn FieldName="KPI_Name" Caption="KPI Name" VisibleIndex="0" />
+                    <dx:GridViewDataTextColumn FieldName="KPI_ID" Caption="KPI ID" VisibleIndex="1">
+                        <DataItemTemplate>
+                            <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                                <span><%# Eval("KPI_ID") %></span>
+                                <asp:CheckBox ID="chkSelect" runat="server" />
+                            </div>
+                        </DataItemTemplate>
+                        <HeaderTemplate>
+                            KPI ID
+                        </HeaderTemplate>
+                    </dx:GridViewDataTextColumn>
+                </Columns>
+                <SettingsPager PageSize="4" />
+            </dx:ASPxGridView>
+
+         
+            <dx:ASPxGridView ID="gvGroups" runat="server" AutoGenerateColumns="False" KeyFieldName="GroupID" Width="360px"
+                OnPageIndexChanged="gvGroups_PageIndexChanged"
+                OnRowDeleting="gvGroups_RowDeleting"
+                OnRowUpdating="gvGroups_RowUpdating">
+                <Columns>
+                    <dx:GridViewDataTextColumn FieldName="GroupName" Caption="Group Name" VisibleIndex="0">
+                        <PropertiesTextEdit>
+                            <ValidationSettings RequiredField-IsRequired="true" />
+                        </PropertiesTextEdit>
+                    </dx:GridViewDataTextColumn>
+
+                   
+                    <dx:GridViewCommandColumn ShowDeleteButton="true" ShowEditButton="true" Caption="Actions" VisibleIndex="1">
+                        <CustomButtons>
+                            <dx:GridViewCommandColumnCustomButton ID="btnAddKPI" Text="Add KPI" />
+                        </CustomButtons>
+                    </dx:GridViewCommandColumn>
+                </Columns>
+
+                <Templates>
+                    <DetailRow>
+                        <dx:ASPxGridView ID="gvGroupMembers" runat="server" AutoGenerateColumns="False"
+                            KeyFieldName="KPI_ID" Width="320px"
+                            OnBeforePerformDataSelect="gvGroupMembers_BeforePerformDataSelect"
+                            OnRowDeleting="gvGroupMembers_RowDeleting">
+                            <Columns>
+                                <dx:GridViewDataTextColumn FieldName="KPI_ID" Caption="KPI ID" VisibleIndex="0" />
+                                <dx:GridViewCommandColumn ShowDeleteButton="True" Caption="Remove" VisibleIndex="1" />
+                            </Columns>
+                            <SettingsPager PageSize="10" />
+                        </dx:ASPxGridView>
+                    </DetailRow>
+                </Templates>
+
+                <SettingsPager PageSize="4" />
+                <SettingsEditing Mode="Inline" />
+                <SettingsDetail ShowDetailRow="true" />
+                <ClientSideEvents CustomButtonClick="function(s, e){ if(e.buttonID === 'btnAddKPI'){ __doPostBack('AddKPI', s.GetRowKey(e.visibleIndex)); } }" />
+            </dx:ASPxGridView>
+        </div>
+
+      
+        <dx:ASPxPopupControl ID="popupAddKPI" runat="server" HeaderText="Select KPIs" Modal="True"
+            ClientInstanceName="popupAddKPI" CloseAction="CloseButton" PopupHorizontalAlign="WindowCenter"
+            PopupVerticalAlign="WindowCenter" Width="500px" ShowFooter="true">
+            <ContentCollection>
+                <dx:PopupControlContentControl runat="server">
+                    <asp:HiddenField ID="hdnSelectedGroupId" runat="server" />
+                    <dx:ASPxCheckBoxList ID="chkKPIList" runat="server" RepeatColumns="2" Width="100%" />
+                </dx:PopupControlContentControl>
+            </ContentCollection>
+            <FooterTemplate>
+                <dx:ASPxButton ID="btnSaveKPI" runat="server" Text="Save" AutoPostBack="true" OnClick="btnSaveKPI_Click" />
+                <dx:ASPxButton ID="btnCancelKPI" runat="server" Text="Cancel" AutoPostBack="false" 
+                    ClientSideEvents-Click="function(){ popupAddKPI.Hide(); }" />
+            </FooterTemplate>
+        </dx:ASPxPopupControl>
+    </form>
+</body>
+</html>
+
+
+-----------------------------------------admin report grouping add KPI---------------------------------
+
+    <dx:ASPxGridView ID="gvGroups" runat="server" AutoGenerateColumns="False" KeyFieldName="GroupID" Width="360px"
+        OnPageIndexChanged="gvGroups_PageIndexChanged"
+        OnRowDeleting="gvGroups_RowDeleting"
+        OnRowUpdating="gvGroups_RowUpdating">
+        <Columns>
+            <dx:GridViewDataTextColumn FieldName="GroupName" Caption="Group Name" VisibleIndex="0">
+                <PropertiesTextEdit>
+                    <ValidationSettings RequiredField-IsRequired="true" />
+                </PropertiesTextEdit>
+            </dx:GridViewDataTextColumn>
+
+           
+            <dx:GridViewCommandColumn ShowDeleteButton="true" ShowEditButton="true" Caption="Actions" VisibleIndex="1">
+                <CustomButtons>
+                    <dx:GridViewCommandColumnCustomButton ID="btnAddKPI" Text="Add KPI" />
+                </CustomButtons>
+            </dx:GridViewCommandColumn>
+        </Columns>
+
+        <Templates>
+            <DetailRow>
+                <dx:ASPxGridView ID="gvGroupMembers" runat="server" AutoGenerateColumns="False"
+                    KeyFieldName="KPI_ID" Width="320px"
+                    OnBeforePerformDataSelect="gvGroupMembers_BeforePerformDataSelect"
+                    OnRowDeleting="gvGroupMembers_RowDeleting">
+                    <Columns>
+                        <dx:GridViewDataTextColumn FieldName="KPI_ID" Caption="KPI ID" VisibleIndex="0" />
+                        <dx:GridViewCommandColumn ShowDeleteButton="True" Caption="Remove" VisibleIndex="1" />
+                    </Columns>
+                    <SettingsPager PageSize="10" />
+                </dx:ASPxGridView>
+            </DetailRow>
+        </Templates>
+
+        <SettingsPager PageSize="4" />
+        <SettingsEditing Mode="Inline" />
+        <SettingsDetail ShowDetailRow="true" />
+        <ClientSideEvents CustomButtonClick="function(s, e){ if(e.buttonID === 'btnAddKPI'){ __doPostBack('AddKPI', s.GetRowKey(e.visibleIndex)); } }" />
+    </dx:ASPxGridView>
+</div>
+
+      
+<dx:ASPxPopupControl ID="popupAddKPI" runat="server" HeaderText="Select KPIs" Modal="True"
+    ClientInstanceName="popupAddKPI" CloseAction="CloseButton" PopupHorizontalAlign="WindowCenter"
+    PopupVerticalAlign="WindowCenter" Width="500px" ShowFooter="true">
+    <ContentCollection>
+        <dx:PopupControlContentControl runat="server">
+            <asp:HiddenField ID="hdnSelectedGroupId" runat="server" />
+            <dx:ASPxCheckBoxList ID="chkKPIList" runat="server" RepeatColumns="2" Width="100%" />
+        </dx:PopupControlContentControl>
+    </ContentCollection>
+    <FooterTemplate>
+        <dx:ASPxButton ID="btnSaveKPI" runat="server" Text="Save" AutoPostBack="true" OnClick="btnSaveKPI_Click" />
+        <dx:ASPxButton ID="btnCancelKPI" runat="server" Text="Cancel" AutoPostBack="false" 
+            ClientSideEvents-Click="function(){ popupAddKPI.Hide(); }" />
+    </FooterTemplate>
+</dx:ASPxPopupControl>
+
+
+Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+    If Not IsPostBack Then
+        BindKPIGrid()
+        BindGroupsGrid()
+    Else
+        Dim eventTarget = Request("__EVENTTARGET")
+        Dim eventArg = Request("__EVENTARGUMENT")
+        If eventTarget = "AddKPI" AndAlso Not String.IsNullOrEmpty(eventArg) Then
+            LoadKPISelectionPopup(Convert.ToInt32(eventArg))
+        End If
+    End If
+End Sub
+
+' Load KPI Table
+Private Sub BindKPIGrid(Optional filter As String = "")
+    Dim sql As String = "SELECT [ID], [KPI Name] AS KPI_Name, [KPI ID] AS KPI_ID FROM [dbo].[KPITable]"
+    If Not String.IsNullOrEmpty(filter) Then
+        sql &= " WHERE [KPI ID] LIKE @KPI_ID"
+    End If
+    sql &= " ORDER BY [KPI ID]"
+
+    Dim dt As New DataTable()
+    Using cn As New SqlConnection(ConnStr)
+        Using cmd As New SqlCommand(sql, cn)
+            If Not String.IsNullOrEmpty(filter) Then
+                cmd.Parameters.AddWithValue("@KPI_ID", "%" & filter & "%")
+            End If
+            Using da As New SqlDataAdapter(cmd)
+                da.Fill(dt)
+            End Using
+        End Using
+    End Using
+
+    gvKPI.DataSource = dt
+    gvKPI.DataBind()
+End Sub
+
+Private Sub BindGroupsGrid()
+    Dim sql As String = "SELECT DISTINCT GroupID, GroupName FROM KPI_Groups ORDER BY GroupID"
+    Dim dt As New DataTable()
+    Using cn As New SqlConnection(ConnStr)
+        Using da As New SqlDataAdapter(sql, cn)
+            da.Fill(dt)
+        End Using
+    End Using
+    gvGroups.DataSource = dt
+    gvGroups.DataBind()
+End Sub
+
+'Protected Sub btnGroup_Click(sender As Object, e As EventArgs)
+'    Dim newGroupName As String = "Group " & (GetNextGroupNumber())
+'    Dim newGroupID As Integer
+
+'    Using cn As New SqlConnection(ConnStr)
+'        cn.Open()
+'        Using cmdGroup As New SqlCommand("INSERT INTO KPI_Groups (GroupName) OUTPUT INSERTED.GroupID VALUES (@GroupName)", cn)
+'            cmdGroup.Parameters.AddWithValue("@GroupName", newGroupName)
+'            newGroupID = Convert.ToInt32(cmdGroup.ExecuteScalar())
+'        End Using
+
+'        For i As Integer = 0 To gvKPI.VisibleRowCount - 1
+'            Dim chk As CheckBox = TryCast(gvKPI.FindRowCellTemplateControl(i, gvKPI.Columns(1), "chkSelect"), CheckBox)
+'            If chk IsNot Nothing AndAlso chk.Checked Then
+'                Dim kpiIdObj = gvKPI.GetRowValues(i, "KPI_ID")
+'                If kpiIdObj IsNot Nothing Then
+'                    Using cmd As New SqlCommand("INSERT INTO KPI_GroupMembers (GroupID, KPI_ID) VALUES (@GroupID, @KPI_ID)", cn)
+'                        cmd.Parameters.AddWithValue("@GroupID", newGroupID)
+'                        cmd.Parameters.AddWithValue("@KPI_ID", kpiIdObj.ToString())
+'                        cmd.ExecuteNonQuery()
+'                    End Using
+'                End If
+'            End If
+'        Next
+'    End Using
+
+'    BindGroupsGrid()
+'    BindKPIGrid()
+'End Sub
+
+Protected Sub btnGroup_Click(sender As Object, e As EventArgs)
+    Dim newGroupName As String = "Group " & (GetNextGroupNumber())
+    Dim newGroupID As Integer
+
+    Dim selectedKPIs As List(Of Object) = gvKPI.GetSelectedFieldValues("KPI_ID")
+
+    Using cn As New SqlConnection(ConnStr)
+        cn.Open()
+
+        ' Insert new group
+        Using cmdGroup As New SqlCommand("INSERT INTO KPI_Groups (GroupName) OUTPUT INSERTED.GroupID VALUES (@GroupName)", cn)
+            cmdGroup.Parameters.AddWithValue("@GroupName", newGroupName)
+            newGroupID = Convert.ToInt32(cmdGroup.ExecuteScalar())
+        End Using
+
+        ' Insert selected KPIs
+        For Each obj In selectedKPIs
+            Using cmd As New SqlCommand("INSERT INTO KPI_GroupMembers (GroupID, KPI_ID) VALUES (@GroupID, @KPI_ID)", cn)
+                cmd.Parameters.AddWithValue("@GroupID", newGroupID)
+                cmd.Parameters.AddWithValue("@KPI_ID", obj.ToString())
+                cmd.ExecuteNonQuery()
+            End Using
+        Next
+    End Using
+
+    gvKPI.Selection.UnselectAll()
+    BindGroupsGrid()
+End Sub
+
+
+Private Function GetNextGroupNumber() As Integer
+    Dim sql As String = "SELECT COUNT(*) FROM KPI_Groups"
+    Using cn As New SqlConnection(ConnStr)
+        Using cmd As New SqlCommand(sql, cn)
+            cn.Open()
+            Return Convert.ToInt32(cmd.ExecuteScalar()) + 1
+        End Using
+    End Using
+End Function
+
+Protected Sub gvGroups_RowDeleting(sender As Object, e As DevExpress.Web.Data.ASPxDataDeletingEventArgs)
+    Dim groupId As Integer = Convert.ToInt32(e.Keys("GroupID"))
+    Using cn As New SqlConnection(ConnStr)
+        cn.Open()
+        Using cmd As New SqlCommand("DELETE FROM KPI_GroupMembers WHERE GroupID=@GroupID", cn)
+            cmd.Parameters.AddWithValue("@GroupID", groupId)
+            cmd.ExecuteNonQuery()
+        End Using
+        Using cmd As New SqlCommand("DELETE FROM KPI_Groups WHERE GroupID=@GroupID", cn)
+            cmd.Parameters.AddWithValue("@GroupID", groupId)
+            cmd.ExecuteNonQuery()
+        End Using
+    End Using
+    e.Cancel = True
+    BindGroupsGrid()
+End Sub
+
+Protected Sub gvGroups_RowUpdating(sender As Object, e As DevExpress.Web.Data.ASPxDataUpdatingEventArgs)
+    Dim groupId As Integer = Convert.ToInt32(e.Keys("GroupID"))
+    Dim newName As String = Convert.ToString(e.NewValues("GroupName"))
+    Using cn As New SqlConnection(ConnStr)
+        Using cmd As New SqlCommand("UPDATE KPI_Groups SET GroupName=@GroupName WHERE GroupID=@GroupID", cn)
+            cmd.Parameters.AddWithValue("@GroupName", newName)
+            cmd.Parameters.AddWithValue("@GroupID", groupId)
+            cn.Open()
+            cmd.ExecuteNonQuery()
+        End Using
+    End Using
+    e.Cancel = True
+    gvGroups.CancelEdit()
+    BindGroupsGrid()
+End Sub
+
+Protected Sub gvGroupMembers_BeforePerformDataSelect(sender As Object, e As EventArgs)
+    Dim detailGrid As ASPxGridView = CType(sender, ASPxGridView)
+    Dim groupId As Integer = Convert.ToInt32((CType(detailGrid.NamingContainer, GridViewDetailRowTemplateContainer)).KeyValue)
+    Dim sql As String = "SELECT KPI_ID FROM KPI_GroupMembers WHERE GroupID = @GroupID"
+    Dim dt As New DataTable()
+    Using cn As New SqlConnection(ConnStr)
+        Using da As New SqlDataAdapter(sql, cn)
+            da.SelectCommand.Parameters.AddWithValue("@GroupID", groupId)
+            da.Fill(dt)
+        End Using
+    End Using
+    detailGrid.DataSource = dt
+End Sub
+
+Protected Sub gvGroupMembers_RowDeleting(sender As Object, e As DevExpress.Web.Data.ASPxDataDeletingEventArgs)
+    Dim detailGrid As ASPxGridView = CType(sender, ASPxGridView)
+    Dim groupId As Integer = Convert.ToInt32((CType(detailGrid.NamingContainer, GridViewDetailRowTemplateContainer)).KeyValue)
+    Dim kpiId As String = e.Keys("KPI_ID").ToString()
+    Using cn As New SqlConnection(ConnStr)
+        Using cmd As New SqlCommand("DELETE FROM KPI_GroupMembers WHERE GroupID=@GroupID AND KPI_ID=@KPI_ID", cn)
+            cmd.Parameters.AddWithValue("@GroupID", groupId)
+            cmd.Parameters.AddWithValue("@KPI_ID", kpiId)
+            cn.Open()
+            cmd.ExecuteNonQuery()
+        End Using
+    End Using
+    e.Cancel = True
+    detailGrid.DataBind()
+End Sub
+
+Protected Sub gvKPI_PageIndexChanged(sender As Object, e As EventArgs)
+    BindKPIGrid()
+End Sub
+
+Protected Sub gvGroups_PageIndexChanged(sender As Object, e As EventArgs)
+    BindGroupsGrid()
+End Sub
+
+' Load KPI Selection Popup
+Private Sub LoadKPISelectionPopup(groupId As Integer)
+    hdnSelectedGroupId.Value = groupId.ToString()
+    Dim allKpi As New DataTable()
+    Using cn As New SqlConnection(ConnStr)
+        Using da As New SqlDataAdapter("SELECT [KPI ID] AS KPI_ID FROM KPITable ORDER BY [KPI ID]", cn)
+            da.Fill(allKpi)
+        End Using
+    End Using
+
+    ' Get existing KPIs for this group
+    Dim existing As New List(Of String)
+    Using cn As New SqlConnection(ConnStr)
+        Using cmd As New SqlCommand("SELECT KPI_ID FROM KPI_GroupMembers WHERE GroupID=@GroupID", cn)
+            cmd.Parameters.AddWithValue("@GroupID", groupId)
+            cn.Open()
+            Using rdr = cmd.ExecuteReader()
+                While rdr.Read()
+                    existing.Add(rdr("KPI_ID").ToString())
+                End While
+            End Using
+        End Using
+    End Using
+
+    chkKPIList.Items.Clear()
+    For Each row As DataRow In allKpi.Rows
+        Dim kpiId As String = row("KPI_ID").ToString()
+        Dim item As New DevExpress.Web.ListEditItem(kpiId, kpiId)
+        item.Selected = existing.Contains(kpiId)
+        chkKPIList.Items.Add(item)
+    Next
+
+    popupAddKPI.ShowOnPageLoad = True
+End Sub
+
+Protected Sub btnSaveKPI_Click(sender As Object, e As EventArgs)
+    Dim groupId As Integer = Convert.ToInt32(hdnSelectedGroupId.Value)
+    Dim selected = chkKPIList.SelectedValues.Cast(Of String)().ToList()
+
+    Using cn As New SqlConnection(ConnStr)
+        cn.Open()
+
+        ' First remove all KPIs from group (so we can reset selection)
+        Using cmdDel As New SqlCommand("DELETE FROM KPI_GroupMembers WHERE GroupID=@GroupID", cn)
+            cmdDel.Parameters.AddWithValue("@GroupID", groupId)
+            cmdDel.ExecuteNonQuery()
+        End Using
+
+        ' Add selected KPIs
+        For Each kpiId In selected
+            Using cmdAdd As New SqlCommand("INSERT INTO KPI_GroupMembers (GroupID, KPI_ID) VALUES (@GroupID, @KPI_ID)", cn)
+                cmdAdd.Parameters.AddWithValue("@GroupID", groupId)
+                cmdAdd.Parameters.AddWithValue("@KPI_ID", kpiId)
+                cmdAdd.ExecuteNonQuery()
+            End Using
+        Next
+    End Using
+
+    popupAddKPI.ShowOnPageLoad = False
+    BindGroupsGrid()
+End Sub
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------
+Ah 👍 got it.
+You’re seeing an error because in DevExpress **WebForms ASPxGridView**, there is **no `DetailRowDataBind` event** (that’s a WinForms/WPF style event).
+
+For ASPxGridView in **ASP.NET WebForms**, the correct way is to use:
+
+* `OnBeforePerformDataSelect` inside the **detail grid** (the one inside `<DetailRow>`).
+
+That’s exactly what you already had in your working code (`gvGroupMembers_BeforePerformDataSelect`).
+
+---
+
+### ✅ Fixed Example for Your Case (with hardcoded values)
+
+**ASPX**
+
+```xml
+<dx:ASPxGridView ID="gvDemo" runat="server" AutoGenerateColumns="False" KeyFieldName="ID" Width="500px">
+    <Columns>
+        <dx:GridViewDataTextColumn FieldName="Name" Caption="Name" VisibleIndex="0" />
+        <dx:GridViewDataTextColumn FieldName="Role" Caption="Role" VisibleIndex="1" />
+    </Columns>
+
+    <SettingsDetail ShowDetailRow="true" />
+
+    <Templates>
+        <DetailRow>
+            <dx:ASPxGridView ID="gvDetail" runat="server" AutoGenerateColumns="False" 
+                KeyFieldName="Project" Width="450px"
+                OnBeforePerformDataSelect="gvDetail_BeforePerformDataSelect">
+                <Columns>
+                    <dx:GridViewDataTextColumn FieldName="Project" Caption="Project" VisibleIndex="0" />
+                    <dx:GridViewDataTextColumn FieldName="Status" Caption="Status" VisibleIndex="1" />
+                </Columns>
+            </dx:ASPxGridView>
+        </DetailRow>
+    </Templates>
+</dx:ASPxGridView>
+```
+
+---
+
+**VB.NET Code Behind**
+
+```vb
+Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+    If Not IsPostBack Then
+        BindMainGrid()
+    End If
+End Sub
+
+Private Sub BindMainGrid()
+    Dim dt As New DataTable()
+    dt.Columns.Add("ID", GetType(Integer))
+    dt.Columns.Add("Name", GetType(String))
+    dt.Columns.Add("Role", GetType(String))
+
+    dt.Rows.Add(1, "Niranjan", "Admin")
+    dt.Rows.Add(2, "Anita", "Manager")
+    dt.Rows.Add(3, "Rahul", "User")
+
+    gvDemo.DataSource = dt
+    gvDemo.DataBind()
+End Sub
+
+Protected Sub gvDetail_BeforePerformDataSelect(sender As Object, e As EventArgs)
+    Dim detailGrid As DevExpress.Web.ASPxGridView = CType(sender, DevExpress.Web.ASPxGridView)
+    Dim parentID As Integer = Convert.ToInt32((CType(detailGrid.NamingContainer, DevExpress.Web.GridViewDetailRowTemplateContainer)).KeyValue)
+
+    Dim dt As New DataTable()
+    dt.Columns.Add("Project", GetType(String))
+    dt.Columns.Add("Status", GetType(String))
+
+    If parentID = 1 Then
+        dt.Rows.Add("KPI001", "Active")
+        dt.Rows.Add("KPI002", "Inactive")
+    ElseIf parentID = 2 Then
+        dt.Rows.Add("HR001", "Ongoing")
+        dt.Rows.Add("HR002", "Completed")
+    Else
+        dt.Rows.Add("USR001", "Pending")
+        dt.Rows.Add("USR002", "Done")
+    End If
+
+    detailGrid.DataSource = dt
+End Sub
+```
+
+---
+
+### 🔑 Key Fix
+
+* Use `OnBeforePerformDataSelect` on the nested grid.
+* `KeyValue` from the parent row gives you the parent ID.
+* Bind hardcoded detail rows inside that event.
+
+---
+
+👉 Do you want me to also add the **Expand/Collapse text instead of +/- buttons** here (like your last screenshot), or keep the default DevExpress +/- icons?
+
+
+
+
+
