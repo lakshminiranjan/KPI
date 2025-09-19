@@ -13,34 +13,36 @@
 
         <h2>Admin KPI Grouping</h2>
 
-        
         <dx:ASPxButton ID="btnGroup" runat="server" Text="Group" AutoPostBack="true" OnClick="btnGroup_Click" />
         <br/><br/>
 
-        
         <div style="display:flex; gap:20px; align-items:flex-start;">
 
-            
-            <%--<dx:ASPxGridView ID="gvKPI" runat="server" KeyFieldName="ID" AutoGenerateColumns="False" Width="600px"
+           
+            <%--<dx:ASPxGridView ID="gvKPI" runat="server" KeyFieldName="KPI_ID" AutoGenerateColumns="False" Width="600px"
                 OnPageIndexChanged="gvKPI_PageIndexChanged">
                 <Columns>
                     <dx:GridViewDataTextColumn FieldName="KPI_Name" Caption="KPI Name" VisibleIndex="0" />
                     <dx:GridViewDataTextColumn FieldName="KPI_ID" Caption="KPI ID" VisibleIndex="1">
                         <DataItemTemplate>
-                            <%# Eval("KPI_ID") %>
-                            <asp:CheckBox ID="chkSelect" runat="server" />
+                            <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                                <span><%# Eval("KPI_ID") %></span>
+                                <asp:CheckBox ID="chkSelect" runat="server" />
+                            </div>
                         </DataItemTemplate>
                         <HeaderTemplate>
                             KPI ID
                         </HeaderTemplate>
                     </dx:GridViewDataTextColumn>
                 </Columns>
-                <SettingsPager PageSize="10" />
+                <SettingsPager PageSize="4" />
             </dx:ASPxGridView>--%>
+
+
             <dx:ASPxGridView ID="gvKPI" runat="server" KeyFieldName="KPI_ID" AutoGenerateColumns="False" Width="600px"
     OnPageIndexChanged="gvKPI_PageIndexChanged">
     <Columns>
-        
+       
         <dx:GridViewCommandColumn ShowSelectCheckbox="true" VisibleIndex="0" />
 
         <dx:GridViewDataTextColumn FieldName="KPI_Name" Caption="KPI Name" VisibleIndex="1" />
@@ -50,39 +52,43 @@
     <SettingsPager PageSize="15" />
     <SettingsBehavior AllowSelectByRowClick="true" />
 </dx:ASPxGridView>
-           
 
-            
-
-
-
-
-
-            
-<dx:ASPxGridView ID="gvGroups" runat="server" AutoGenerateColumns="False" KeyFieldName="GroupID" Width="360px"
+         
+           <dx:ASPxGridView ID="gvGroups" runat="server" AutoGenerateColumns="False" 
+    KeyFieldName="GroupID" Width="360px"
     OnPageIndexChanged="gvGroups_PageIndexChanged"
     OnRowDeleting="gvGroups_RowDeleting"
     OnRowUpdating="gvGroups_RowUpdating"
-    OnCustomButtonCallback="gvGroups_CustomButtonCallback"
-    OnHtmlCommandCellPrepared="gvGroups_HtmlCommandCellPrepared">
+    OnCustomCallback="gvGroups_CustomCallback"
+    OnCustomButtonInitialize="gvGroups_CustomButtonInitialize"
+    OnDataBinding="gvGroups_DataBinding">
+
+
 
     <Columns>
         
-        <dx:GridViewCommandColumn Caption="Expand" VisibleIndex="0" ButtonType="Image">
-            <CustomButtons>
-                <dx:GridViewCommandColumnCustomButton ID="btnExpand">
-                    <Image Url="~/Images/plus.png" Width="16px" Height="16px" />
-                </dx:GridViewCommandColumnCustomButton>
-            </CustomButtons>
-        </dx:GridViewCommandColumn>
+        <dx:GridViewCommandColumn Caption="Expand" VisibleIndex="0" Width="50px" ButtonType="Image">
+    <CustomButtons>
+        <dx:GridViewCommandColumnCustomButton ID="btnExpand" Image-Url="~/Images/plus.png" />
+    </CustomButtons>
+</dx:GridViewCommandColumn>
 
+
+
+
+        
         <dx:GridViewDataTextColumn FieldName="GroupName" Caption="Group Name" VisibleIndex="1">
             <PropertiesTextEdit>
                 <ValidationSettings RequiredField-IsRequired="true" />
             </PropertiesTextEdit>
         </dx:GridViewDataTextColumn>
 
-        <dx:GridViewCommandColumn ShowDeleteButton="true" ShowEditButton="true" Caption="Actions" VisibleIndex="2" />
+        
+        <dx:GridViewCommandColumn ShowDeleteButton="true" ShowEditButton="true" Caption="Actions" VisibleIndex="2">
+            <CustomButtons>
+                <dx:GridViewCommandColumnCustomButton ID="btnAddKPI" Text="Add KPI" />
+            </CustomButtons>
+        </dx:GridViewCommandColumn>
     </Columns>
 
     <Templates>
@@ -95,20 +101,51 @@
                     <dx:GridViewDataTextColumn FieldName="KPI_ID" Caption="KPI ID" VisibleIndex="0" />
                     <dx:GridViewCommandColumn ShowDeleteButton="True" Caption="Remove" VisibleIndex="1" />
                 </Columns>
-                <SettingsPager PageSize="10" />
+                <SettingsPager PageSize="15" />
             </dx:ASPxGridView>
         </DetailRow>
     </Templates>
 
-    <SettingsPager PageSize="10" />
+   
+    <SettingsDetail ShowDetailRow="true" ShowDetailButtons="false" />
+    <SettingsPager PageSize="15" />
     <SettingsEditing Mode="Inline" />
-        <SettingsDetail ShowDetailRow="true" ShowDetailButtons="false" />
+
+    
+   <ClientSideEvents 
+    CustomButtonClick="function(s, e) {
+        if (e.buttonID === 'btnExpand') {
+            s.PerformCallback('toggle~' + s.GetRowKey(e.visibleIndex));
+        }
+        else if (e.buttonID === 'btnAddKPI') {
+            __doPostBack('AddKPI', s.GetRowKey(e.visibleIndex));
+        }
+    }" />
+
+
+
 
 </dx:ASPxGridView>
 
 
-
         </div>
+
+      
+        <dx:ASPxPopupControl ID="popupAddKPI" runat="server" HeaderText="Select KPIs" Modal="True"
+            ClientInstanceName="popupAddKPI" CloseAction="CloseButton" PopupHorizontalAlign="WindowCenter"
+            PopupVerticalAlign="WindowCenter" Width="500px" ShowFooter="true">
+            <ContentCollection>
+                <dx:PopupControlContentControl runat="server">
+                    <asp:HiddenField ID="hdnSelectedGroupId" runat="server" />
+                    <dx:ASPxCheckBoxList ID="chkKPIList" runat="server" RepeatColumns="2" Width="100%" />
+                </dx:PopupControlContentControl>
+            </ContentCollection>
+            <FooterTemplate>
+                <dx:ASPxButton ID="btnSaveKPI" runat="server" Text="Save" AutoPostBack="true" OnClick="btnSaveKPI_Click" />
+                <dx:ASPxButton ID="btnCancelKPI" runat="server" Text="Cancel" AutoPostBack="false" 
+                    ClientSideEvents-Click="function(){ popupAddKPI.Hide(); }" />
+            </FooterTemplate>
+        </dx:ASPxPopupControl>
     </form>
 </body>
 </html>

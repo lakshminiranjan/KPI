@@ -66,4 +66,40 @@ Partial Public Class AdminReport
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnExpand As Global.DevExpress.Web.GridViewCommandColumnCustomButton
+
+    '''<summary>
+    '''btnAddKPI control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnAddKPI As Global.DevExpress.Web.GridViewCommandColumnCustomButton
+
+    '''<summary>
+    '''popupAddKPI control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents popupAddKPI As Global.DevExpress.Web.ASPxPopupControl
+
+    '''<summary>
+    '''hdnSelectedGroupId control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents hdnSelectedGroupId As Global.System.Web.UI.WebControls.HiddenField
+
+    '''<summary>
+    '''chkKPIList control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkKPIList As Global.DevExpress.Web.ASPxCheckBoxList
 End Class
