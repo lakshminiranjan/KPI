@@ -1084,5 +1084,85 @@ Side grid = grouping panel (collapsible/expandable groups).
 Do you want me to also add expand/collapse group rows in the side grid (so when you click Group 1, it shows KPI IDs inside)?
 
 
+Here’s a **ready-to-use Jira comment template** for your migration task:
+
+***
+
+### **Jira Comment for EMSS-908 – IIS Application Configuration (Windows Server Migration)**
+
+**Summary:**  
+Migration from **Windows Server 2016 to 2022** impacts IIS configuration and application compatibility. Current application targets **.NET Framework 4.5.2**, while Windows Server 2022 uses **.NET Framework 4.8** (in-place upgrade). Below are the risks, validation steps, and recommended actions.
+
+***
+
+#### ✅ **Migration Risks**
+
+*   **Framework Upgrade Impact**: .NET 4.5.2 → 4.8 introduces API changes and stricter security defaults.
+*   **IIS Configuration Differences**: Modules, handlers, and request filtering may differ.
+*   **TLS Enforcement**: Server 2022 enforces TLS 1.2+; older protocols disabled.
+*   **DevExpress v15.2 Compatibility**: Legacy version may have UI rendering issues.
+*   **SQL Server Connectivity**: Ensure drivers and connection strings support TLS 1.2.
+
+***
+
+#### ✅ **Validation Checklist**
+
+1.  **Application Pools**
+    *   Update all pools to `.NET CLR v4.0`.
+    *   Enable 32-bit apps if required.
+2.  **Framework Upgrade**
+    *   Change target framework to **4.8** in Visual Studio.
+    *   Update `web.config`:
+        ```xml
+        <httpRuntime targetFramework="4.8" />
+        <compilation targetFramework="4.8" />
+        ```
+3.  **IIS Roles & Features**
+    *   Install ASP.NET 4.8, .NET Extensibility, ISAPI Extensions, URL Rewrite.
+4.  **Site Bindings**
+    *   Migrate SSL certificates and enable SNI.
+    *   Validate HTTPS/TLS 1.2 compliance.
+5.  **Modules & Handlers**
+    *   Verify ASP.NET and custom modules.
+6.  **Security**
+    *   Apply TLS 1.2 enforcement and cipher suite hardening.
+7.  **Backup**
+    *   Run `appcmd add backup "PreMigration"` before changes.
+8.  **Testing**
+    *   Validate in staging environment before production cutover.
+
+***
+
+#### ✅ **Recommended Actions**
+
+*   Upgrade application to **.NET Framework 4.8**.
+*   Use **Visual Studio Compatibility Analyzer** to identify deprecated APIs.
+*   Test DevExpress components; upgrade to v18.2+ if feasible.
+*   Validate SQL connectivity and update drivers.
+*   Document all changes for rollback.
+
+***
+
+#### ✅ **Automation**
+
+Use PowerShell for quick checks:
+
+```powershell
+Get-WebConfigurationProperty -pspath 'MACHINE/WEBROOT/APPHOST' -filter "system.applicationHost/applicationPools" -name "managedRuntimeVersion"
+```
+
+***
+
+**Next Steps:**
+
+*   Complete framework upgrade and IIS configuration validation in staging.
+*   Share test results before production migration.
+
+***
+
+👉 Do you want me to **prepare a full migration guide document** (with screenshots, PowerShell scripts, and rollback plan) that you can attach to this Jira ticket?
+
+
+
 
 
