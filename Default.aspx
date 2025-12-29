@@ -9,8 +9,12 @@
         .sortable-header:hover .sort-arrows { opacity: 1; }
         .arrow-icon { background: none; border: none; font-size: 14px; margin-left: 3px; cursor: pointer; color: #2196F3; padding:0 2px; }
         .sort-indicator { font-weight:bold; color:darkorange; margin-left:3px; }
+        .disabled-btn {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 
-        .modal {
+        /*.modal {
             display: none;
             position: fixed;
             top: 50%;
@@ -24,35 +28,103 @@
             padding: 20px; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             z-index: 1000;
-        }
-        .close-btn { float: right; font-size: 20px; font-weight: bold; cursor: pointer; }
-        .error-span { 
-            color: red; 
-            font-size: 12px; 
-            margin-left: 10px; 
-            display:none;
-            visibility:hidden;
-            font-weight: bold;
-        }
-        .error-span.show {
-            display: inline;
-            visibility: visible;
-        }
-        .toggle-switch { position: relative; display: inline-block; width: 40px; height: 20px; }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc; transition: .4s; border-radius: 20px;
-        }
-        .toggle-switch input:checked + .slider { background-color: #2196F3; }
-        .slider:before {
-            position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px;
-            background-color: white; transition: .4s; border-radius: 50%;
-        }
-        .toggle-switch input:checked + .slider:before { transform: translateX(20px); }
-        .btn-add, .btn-edit { padding: 6px 12px; border: none; border-radius: 4px; color: white; cursor: pointer; }
-        .btn-add { background-color: #4CAF50; }
-        .btn-edit { background-color: #2196F3; }
+        }*/
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 900px; /* Wider modal */
+    max-width: 98vw;
+    background: #fff;
+    z-index: 9999;
+    padding: 30px 32px 18px 32px;
+    border-radius: 10px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.21);
+    box-sizing: border-box;
+}
+
+.modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two columns */
+    gap: 22px 48px; /* More horizontal gap */
+    width: 100%;
+    box-sizing: border-box;
+    align-items: start;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 4px;
+    min-width: 0;
+}
+
+.form-group label {
+    font-size: 16px;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    font-size: 15px;
+    padding: 8px 9px;
+    max-width: 98%;
+    min-width: 230px;
+    box-sizing: border-box;
+    border: 1px solid #cbcbcb;
+    border-radius: 6px;
+    margin-bottom: 2px;
+}
+
+.flags-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 30px;
+    grid-column: span 2;
+    margin-top: 12px;
+    margin-bottom: 0;
+}
+
+.flag-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    margin-bottom: 2px;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 22px;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc; transition: .4s; border-radius: 22px;
+}
+.toggle-switch input:checked + .slider { background-color: #2196F3; }
+.slider:before {
+    position: absolute; content: ""; height: 18px; width: 18px; left: 2px; bottom: 2px;
+    background-color: white; transition: .4s; border-radius: 50%;
+}
+.toggle-switch input:checked + .slider:before { transform: translateX(22px); }
+.btn-add, .btn-edit {
+    padding: 8px 24px;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+.btn-add { background-color: #4CAF50; }
+.btn-edit { background-color: #2196F3; }
+.close-btn { float: right; font-size: 22px; font-weight: bold; cursor: pointer; }
+
         table { width: 100%; border-collapse: collapse; }
         table td, table th { padding: 8px; border: 1px solid #ccc; }
         .grid-style {
@@ -457,6 +529,40 @@
             }
         });
 
+        function enforceSubmitRule() {
+        var submitBtn = document.getElementById("<%= btnSubmit.ClientID %>");
+        if (!submitBtn) return;
+
+        // Check lblKPIError
+        var lblError = document.getElementById("<%= lblKPIError.ClientID %>");
+        var hasLabelError = lblError && lblError.innerText.trim() !== "";
+
+        // Check any label with class "error-msg"
+        var hasClassError = false;
+        var errorLabels = document.querySelectorAll(".error-msg");
+        errorLabels.forEach(function (el) {
+            if (el.innerText.trim() !== "") {
+                hasClassError = true;
+            }
+        });
+
+        // If either type of error is present → disable
+        if (hasLabelError || hasClassError) {
+            submitBtn.disabled = true;
+            submitBtn.classList.add("disabled-btn");
+        } else {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove("disabled-btn");
+        }
+    }
+
+    // Run once on page load
+    window.addEventListener("load", enforceSubmitRule);
+
+    // Re-run whenever DOM changes (in case some other script sets error labels later)
+    var observer = new MutationObserver(enforceSubmitRule);
+    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+
         
 
 
@@ -470,7 +576,7 @@
 
 
    
-    <div id="kpiModal" class="modal">
+<%--    <div id="kpiModal" class="modal">
         <span class="close-btn" onclick="hidePopup()">×</span>
         <h3><asp:Label ID="lblFormTitle" runat="server" Text="Add KPI" /></h3>
 
@@ -509,7 +615,115 @@
         </table>
         <asp:HiddenField ID="hfIsEdit" runat="server" />
         <asp:HiddenField ID="hfKPIID" runat="server" />
+    </div>--%>
+
+   <div id="kpiModal" class="modal">
+    <span class="close-btn" onclick="hidePopup()">×</span>
+    <h3><asp:Label ID="lblFormTitle" runat="server" Text="Add KPI" /></h3>
+    <div class="modal-grid">
+        <div class="form-group">
+            <label>Metric:</label>
+            <asp:TextBox ID="txtMetric" runat="server" />
+        </div>
+        <div class="form-group">
+            <label>Name:</label>
+            <asp:TextBox ID="txtKPIName" runat="server" />
+            <asp:Label ID="lblDuplicateMetricKPIError" runat="server" ForeColor="Red"
+                Style="color:red;font-size:12px;margin-top:5px;display:block;" />
+            <asp:RequiredFieldValidator ID="rfvKPIName" runat="server"
+                ControlToValidate="txtKPIName" ErrorMessage="KPI Name is required"
+                ForeColor="Red" Display="Dynamic" />
+        </div>
+        <div class="form-group">
+            <label>KPI ID:</label>
+            <asp:TextBox ID="txtKPIID" runat="server" />
+            <asp:Label ID="lblKPIError" runat="server" CssClass="error-span"
+                Text="KPI ID already exists" ForeColor="Red" Visible="false" />
+        </div>
+        <div class="form-group">
+            <label>Impact:</label>
+            <asp:TextBox ID="txtImpact" runat="server" TextMode="MultiLine" Rows="2" />
+        </div>
+        <div class="form-group">
+            <label>Short Desc:</label>
+            <asp:TextBox ID="txtShortDesc" runat="server" TextMode="MultiLine" Rows="2" />
+        </div>
+        <div class="form-group">
+            <label>Order:</label>
+            <asp:TextBox ID="txtOrder" runat="server" />
+            <asp:Label ID="lblOrderError" runat="server" CssClass="error-msg" Text="" />
+        </div>
+        <div class="form-group">
+            <label>Numerator:</label>
+            <asp:TextBox ID="txtNumerator" runat="server" TextMode="MultiLine" Rows="2" />
+        </div>
+        <div class="form-group">
+            <label>Denominator:</label>
+            <asp:TextBox ID="txtDenom" runat="server" TextMode="MultiLine" Rows="2" />
+        </div>
+        <div class="form-group">
+            <label>Unit:</label>
+            <asp:TextBox ID="txtUnit" runat="server" />
+        </div>
+        <div class="form-group">
+            <label>Datasource:</label>
+            <asp:TextBox ID="txtDatasource" runat="server" />
+        </div>
+        <div class="form-group">
+            <label>KPI_Section:</label>
+            <asp:TextBox ID="txtSection" runat="server" />
+        </div>
+        <div class="form-group">
+            <label>Active:</label>
+            <label class="toggle-switch">
+                <asp:CheckBox ID="chkActive" runat="server" /><span class="slider"></span>
+            </label>
+        </div>
+        <!-- All flags organized in two columns -->
+        <div class="flags-container" style="grid-column: span 2;">
+            <div class="flag-row">
+                <label>FLAG_DIVISINAL:</label>
+                <label class="toggle-switch"><asp:CheckBox ID="chkFlagDivisinal" runat="server" /><span class="slider"></span></label>
+            </div>
+            <div class="flag-row">
+                <label>FLAG_VENDOR:</label>
+                <label class="toggle-switch"><asp:CheckBox ID="chkFlagVendor" runat="server" /><span class="slider"></span></label>
+            </div>
+            <div class="flag-row">
+                <label>FLAG_ENGAGEMENTID:</label>
+                <label class="toggle-switch"><asp:CheckBox ID="chkFlagEngagement" runat="server" /><span class="slider"></span></label>
+            </div>
+            <div class="flag-row">
+                <label>FLAG_CONTRACTID:</label>
+                <label class="toggle-switch"><asp:CheckBox ID="chkFlagContract" runat="server" /><span class="slider"></span></label>
+            </div>
+            <div class="flag-row">
+                <label>FLAG_COSTCENTRE:</label>
+                <label class="toggle-switch"><asp:CheckBox ID="chkFlagCostcentre" runat="server" /><span class="slider"></span></label>
+            </div>
+            <div class="flag-row">
+                <label>FLAG_DEUBALvl4:</label>
+                <label class="toggle-switch"><asp:CheckBox ID="chkFlagDeuballvl4" runat="server" /><span class="slider"></span></label>
+            </div>
+            <div class="flag-row">
+                <label>FLAG_HRID:</label>
+                <label class="toggle-switch"><asp:CheckBox ID="chkFlagHRID" runat="server" /><span class="slider"></span></label>
+            </div>
+            <div class="flag-row">
+                <label>FLAG_REQUESTID:</label>
+                <label class="toggle-switch"><asp:CheckBox ID="chkFlagRequest" runat="server" /><span class="slider"></span></label>
+            </div>
+        </div>
     </div>
+    <div style="text-align:center;margin-top:16px;">
+        <asp:Button ID="btnSubmit" ValidationGroup="AddEditGroup" runat="server"
+            Text="Submit" OnClick="btnSubmit_Click" CssClass="btn-add" />
+    </div>
+    <asp:HiddenField ID="hfIsEdit" runat="server" />
+    <asp:HiddenField ID="hfKPIID" runat="server" />
+</div>
+
+
 
 
 
@@ -609,9 +823,9 @@
             <div class="sortable-header">
                 Metric
                 <span class="sort-arrows">
-                    <asp:LinkButton ID="btnSortUpMetric" runat="server" CommandName="CustomSort"
+                    <asp:LinkButton ID="btnSortUpMetric" runat="server" CommandName="CustomSort" CausesValidation="false"
                         CommandArgument="KPI or Standalone Metric|DESC" CssClass="arrow-icon" ToolTip="Sort Descending">&#9650;</asp:LinkButton>
-                    <asp:LinkButton ID="btnSortDownMetric" runat="server" CommandName="CustomSort"
+                    <asp:LinkButton ID="btnSortDownMetric" runat="server" CommandName="CustomSort" CausesValidation="false"
                         CommandArgument="KPI or Standalone Metric|ASC" CssClass="arrow-icon" ToolTip="Sort Ascending">&#9660;</asp:LinkButton>
                 </span>
                 <asp:Label ID="lblCurrentSortMetric" runat="server" CssClass="sort-indicator"></asp:Label>

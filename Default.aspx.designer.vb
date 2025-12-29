@@ -86,6 +86,15 @@ Partial Public Class _Default
     Protected WithEvents lblKPIError As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''txtImpact control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtImpact As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
     '''txtShortDesc control.
     '''</summary>
     '''<remarks>
@@ -111,15 +120,6 @@ Partial Public Class _Default
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblOrderError As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''txtImpact control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtImpact As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
     '''txtNumerator control.

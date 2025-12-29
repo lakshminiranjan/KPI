@@ -248,17 +248,26 @@ Partial Public Class _Default
         If e.CommandName = "EditKPI" Then
             Dim index As Integer = Convert.ToInt32(e.CommandArgument)
             LoadEditData(index)
+
         ElseIf e.CommandName = "CustomSort" Then
             Dim args = e.CommandArgument.ToString().Split("|"c)
-            If args.Length = 2 Then
-                SortColumn = args(0)
-                SortDirection = args(1)
-                SqlDataSource1.SelectParameters("SortColumn").DefaultValue = SortColumn
-                SqlDataSource1.SelectParameters("SortDirection").DefaultValue = SortDirection
-                GridView1.DataBind()
-            End If
+            Dim clickedColumn As String = args(0)
+            Dim clickedDirection As String = args(1)
+
+            ' Save to ViewState
+            SortColumn = clickedColumn
+            SortDirection = clickedDirection
+
+            ' Push to SqlDataSource params
+            SqlDataSource1.SelectParameters("SortColumn").DefaultValue = SortColumn
+            SqlDataSource1.SelectParameters("SortDirection").DefaultValue = SortDirection
+
+            GridView1.DataBind()
         End If
+
+
     End Sub
+
 
 
 
@@ -432,10 +441,11 @@ Partial Public Class _Default
                             lblSort = TryCast(cell.FindControl("lblCurrentSortReq"), Label)
                     End Select
                     If lblSort IsNot Nothing AndAlso tf.SortExpression = SortColumn Then
-                        lblSort.Text = If(SortDirection = "DESC", "▲", "▼")
+                        lblSort.Text = If(SortDirection = "ASC", "▲", "▼")
                     ElseIf lblSort IsNot Nothing Then
                         lblSort.Text = ""
                     End If
+
                 End If
             Next
         End If

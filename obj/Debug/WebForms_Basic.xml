@@ -127,6 +127,105 @@ Auto-generated field.
 To modify move field declaration from designer file to code-behind file.
 </remarks>
 </member>
+<member name="F:KPILibrary.FilterBoxControl._fltReportFrom">
+<summary>
+fltReportFrom control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary.FilterBoxControl._fltReportTo">
+<summary>
+fltReportTo control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary.FilterBoxControl._fltPeriod">
+<summary>
+fltPeriod control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary.FilterBoxControl._fltGroupName">
+<summary>
+fltGroupName control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary.FilterBoxControl._fltVendor">
+<summary>
+fltVendor control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary.FilterBoxControl._btnGenerateReport">
+<summary>
+btnGenerateReport control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary.MultiSelectFilter._lblTitle">
+<summary>
+lblTitle control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary.MultiSelectFilter._txtSelected">
+<summary>
+txtSelected control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary.MultiSelectFilter._btnToggle">
+<summary>
+btnToggle control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary.MultiSelectFilter._pnlList">
+<summary>
+pnlList control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary.MultiSelectFilter._CheckBoxList">
+<summary>
+CheckBoxList control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
 <member name="F:KPILibrary._Default._btnLogout">
 <summary>
 btnLogout control.
@@ -199,6 +298,15 @@ Auto-generated field.
 To modify move field declaration from designer file to code-behind file.
 </remarks>
 </member>
+<member name="F:KPILibrary._Default._txtImpact">
+<summary>
+txtImpact control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
 <member name="F:KPILibrary._Default._txtShortDesc">
 <summary>
 txtShortDesc control.
@@ -220,15 +328,6 @@ To modify move field declaration from designer file to code-behind file.
 <member name="F:KPILibrary._Default._lblOrderError">
 <summary>
 lblOrderError control.
-</summary>
-<remarks>
-Auto-generated field.
-To modify move field declaration from designer file to code-behind file.
-</remarks>
-</member>
-<member name="F:KPILibrary._Default._txtImpact">
-<summary>
-txtImpact control.
 </summary>
 <remarks>
 Auto-generated field.
@@ -427,6 +526,51 @@ To modify move field declaration from designer file to code-behind file.
 <member name="F:KPILibrary._Default._GridView1">
 <summary>
 GridView1 control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary.FReport._form1">
+<summary>
+form1 control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary.FReport._FilterBoxControl">
+<summary>
+FilterBoxControl control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary.FReport._pnlReport">
+<summary>
+pnlReport control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary.FReport._litMessage">
+<summary>
+litMessage control.
+</summary>
+<remarks>
+Auto-generated field.
+To modify move field declaration from designer file to code-behind file.
+</remarks>
+</member>
+<member name="F:KPILibrary.GetQuarterDates._form1">
+<summary>
+form1 control.
 </summary>
 <remarks>
 Auto-generated field.
